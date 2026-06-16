@@ -111,6 +111,20 @@ function tgHeader() {
     q: "",
     mega: null,            // active pillar slug (local)
     mobileOpen: {},        // accordion state for mobile nav
+    condensed: false,      // utility strip hidden on scroll-down
+    lastY: 0,
+    init() {
+      // Bound after the header partial is injected (Alpine initTree runs init()).
+      this.lastY = window.scrollY || 0;
+      window.addEventListener("scroll", () => {
+        var y = window.scrollY || 0;
+        var dy = y - this.lastY;
+        if (Math.abs(dy) < 6) return;                 // ignore sub-pixel jitter
+        if (dy > 0 && y > 120) this.condensed = true; // scrolling down, past threshold
+        else if (dy < 0) this.condensed = false;      // scrolling up
+        this.lastY = y;
+      }, { passive: true });
+    },
     get cats() { return window.TG.categories; },
     setMega(slug) { this.mega = slug; },
     clearMega() { this.mega = null; },
