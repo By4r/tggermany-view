@@ -85,3 +85,18 @@
     </div>
   </div>
 </footer>
+
+<!-- Cookie consent (global, persisted) -->
+<div x-data="tgCookie()" x-show="show" x-cloak x-transition.opacity
+     class="cookie-bar" role="region" aria-label="Çerez bildirimi">
+  <div class="container-tg py-3 flex flex-col sm:flex-row items-center gap-3 sm:justify-between">
+    <p class="text-sm text-body text-center sm:text-left">
+      Daha iyi bir kullanıcı deneyimi için çerezleri kullanıyoruz.
+      <a href="cerezler.html" class="text-primary-700 underline">Çerezler</a>
+    </p>
+    <div class="flex gap-2 shrink-0">
+      <button type="button" class="btn btn--secondary btn--sm" @click="decide('reddet')">Reddet</button>
+      <button type="button" class="btn btn--sm" @click="decide('kabul')">Kabul Et</button>
+    </div>
+  </div>
+</div>

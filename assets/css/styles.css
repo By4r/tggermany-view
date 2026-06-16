@@ -168,14 +168,14 @@ button { font-family: inherit; cursor: pointer; }
 .logo-img { height: 38px; width: auto; }
 @media (min-width: 768px) { .logo-img { height: 44px; } }
 
-.search-pill { display: flex; align-items: center; background: #fff; border: 1px solid var(--tg-line); border-radius: var(--r-pill); padding: 0 6px 0 16px; height: 46px; width: 100%; }
+.search-pill { display: flex; align-items: center; background: #fff; border: 1px solid var(--tg-line); border-radius: var(--r-lg); padding: 0 14px 0 16px; height: 46px; width: 100%; }
 .search-pill:focus-within { border-color: var(--tg-primary); }
 .search-pill > svg { flex: none; margin-right: 8px; }
 .search-pill input { border: 0; background: transparent; flex: 1; height: 100%; outline: none; font-size: 14px; color: var(--tg-ink); }
 .search-pill input::placeholder { color: var(--tg-muted); }
-/* "Ara" button sits flush at the right end; right corners match the pill curve */
+/* "Ara" button sits flush at the right end; same radius as the pill, single unit */
 .search-pill:has(.search-btn) { padding-right: 0; }
-.search-btn { align-self: stretch; border: 0; border-radius: 4px var(--r-pill) var(--r-pill) 4px; padding-inline: 22px; margin-left: 8px; }
+.search-btn { align-self: stretch; border: 0; border-radius: 0 var(--r-lg) var(--r-lg) 0; padding-inline: 22px; }
 
 .nav-link { position: relative; padding: 13px 2px; font-size: 14px; font-weight: 500; color: var(--tg-ink); }
 .nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--tg-primary); transform: scaleX(0); transform-origin: left; transition: transform .2s; }
@@ -219,6 +219,9 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Real-data placeholder marker (no fake contact data shipped) */
 .data-tbd { color: var(--tg-muted); font-style: italic; }
+
+/* ---- Cookie consent bar (flat, foundation tokens) --------------------- */
+.cookie-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; background: #fff; border-top: 1px solid var(--tg-line); box-shadow: 0 -4px 18px rgba(28, 36, 34, .08); }
 
 /* ---- Utility ----------------------------------------------------------- */
 [x-cloak] { display: none !important; }

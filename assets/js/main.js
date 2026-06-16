@@ -105,6 +105,16 @@ function tgProductCard(product) {
 }
 window.tgProductCard = tgProductCard;
 
+/* ---- cookie consent (persisted choice) -------------------------------- */
+function tgCookie() {
+  return {
+    show: false,
+    init() { this.show = !localStorage.getItem("tg_cookie"); },
+    decide(choice) { localStorage.setItem("tg_cookie", choice); this.show = false; },
+  };
+}
+window.tgCookie = tgCookie;
+
 /* ---- header component (mega-menu, search, lang) ----------------------- */
 function tgHeader() {
   return {
