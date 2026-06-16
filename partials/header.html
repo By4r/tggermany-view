@@ -17,34 +17,31 @@
     </div>
   </div>
 
-  <!-- Row 2: main bar (logo + category nav + search + actions) -->
-  <div class="container-tg flex items-center gap-3 md:gap-5 py-3">
-    <button type="button" class="icon-btn tap lg:hidden" @click="$store.ui.toggleMobile()" aria-label="Menüyü aç">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
+  <!-- Row 2: main bar (logo left · nav centered · actions right) -->
+  <div class="container-tg flex items-center gap-3 py-3">
+    <!-- left: hamburger + logo -->
+    <div class="flex items-center gap-3 lg:flex-1 min-w-0">
+      <button type="button" class="icon-btn tap lg:hidden" @click="$store.ui.toggleMobile()" aria-label="Menüyü aç">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <a href="index.html" class="shrink-0" aria-label="TG Germany ana sayfa">
+        <img src="assets/img/logo.png" alt="TG Germany" class="logo-img" />
+      </a>
+    </div>
 
-    <!-- Real TG logo -->
-    <a href="index.html" class="shrink-0" aria-label="TG Germany ana sayfa">
-      <img src="assets/img/logo.png" alt="TG Germany" class="logo-img" />
-    </a>
-
-    <!-- Category nav (lg+) -->
-    <nav class="hidden lg:flex items-center gap-6 ml-4" aria-label="Ürün kategorileri">
+    <!-- center: category nav (lg+) -->
+    <nav class="hidden lg:flex items-center justify-center gap-7" aria-label="Ürün kategorileri">
       <template x-for="c in cats" :key="c.slug">
         <a :href="'kategori.html#'+c.slug" class="nav-link" @mouseenter="setMega(c.slug)" @focus="setMega(c.slug)"
            :aria-expanded="mega===c.slug" x-text="c.name"></a>
       </template>
     </nav>
 
-    <!-- Search (md+), compact -->
-    <form class="search-pill hidden md:flex ml-auto" style="width:320px;max-width:34vw" @submit.prevent="submitSearch()" role="search">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a9492" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input type="search" x-model="q" :placeholder="$store.lang.t('search')" aria-label="Ara" />
-      <button type="submit" class="btn search-btn" aria-label="Ara">Ara</button>
-    </form>
-
-    <!-- Actions -->
-    <div class="flex items-center gap-1 ml-auto md:ml-2">
+    <!-- right: actions (search icon + account + cart) -->
+    <div class="flex items-center gap-1 ml-auto lg:ml-0 lg:flex-1 lg:justify-end">
+      <button type="button" class="icon-btn tap text-ink" @click="toggleSearch()" :aria-expanded="searchOpen" aria-label="Ara">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
       <a href="#" class="icon-btn tap hidden sm:grid text-ink" :aria-label="$store.lang.t('account')">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
       </a>
@@ -55,12 +52,15 @@
     </div>
   </div>
 
-  <!-- Mobile search -->
-  <div class="container-tg pb-3 md:hidden">
-    <form class="search-pill" @submit.prevent="submitSearch()" role="search">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a9492" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input type="search" x-model="q" :placeholder="$store.lang.t('search')" aria-label="Ara" />
-    </form>
+  <!-- Search panel (revealed by the search icon) -->
+  <div class="search-panel" x-show="searchOpen" x-collapse x-cloak @keydown.escape.window="searchOpen=false">
+    <div class="container-tg pb-3">
+      <form class="search-pill" @submit.prevent="submitSearch()" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a9492" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" x-ref="searchInput" x-model="q" :placeholder="$store.lang.t('search')" aria-label="Ara" />
+        <button type="submit" class="btn search-btn" aria-label="Ara">Ara</button>
+      </form>
+    </div>
   </div>
 
   <!-- Mega panel (drops below the whole header; the sticky header is the positioned containing block) -->

@@ -295,6 +295,21 @@ button { font-family: inherit; cursor: pointer; }
   background: linear-gradient(100deg, rgba(3,48,51,.92) 0%, rgba(0,104,106,.84) 55%, rgba(0,116,118,.84) 100%);
 }
 
+/* Search panel (revealed by the header search icon) */
+.search-panel { border-top: 1px solid var(--tg-line); background: #fff; }
+.search-panel .search-pill { max-width: 640px; margin-inline: auto; }
+
+/* Extended-warranty section */
+.warranty-shield { width: 60px; height: 60px; border-radius: var(--r-lg); background: rgba(0,168,169,.10); color: var(--tg-primary-700); display: grid; place-items: center; flex: none; }
+.warranty-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--tg-amber); color: var(--tg-ink); font-weight: 700; font-size: 13px; padding: 5px 12px; border-radius: var(--r-pill); }
+
+/* Visual promo feature band (image-led, distinct from the 2-up promo cards) */
+.promo-feature { position: relative; overflow: hidden; border-radius: var(--r-lg); min-height: 300px; display: flex; align-items: center; }
+.promo-feature__bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform .5s ease; }
+.promo-feature:hover .promo-feature__bg { transform: scale(1.04); }
+.promo-feature__overlay { position: absolute; inset: 0; background: linear-gradient(95deg, rgba(3,48,51,.88) 0%, rgba(3,48,51,.6) 42%, rgba(3,48,51,.15) 100%); }
+@media (min-width: 768px) { .promo-feature { min-height: 360px; } }
+
 /* Real-data placeholder marker (no fake contact data shipped) */
 .data-tbd { color: var(--tg-muted); font-style: italic; }
 

@@ -150,11 +150,16 @@ function tgHeader() {
         if (!ticking) { ticking = true; requestAnimationFrame(evaluate); }
       }, { passive: true });
     },
+    searchOpen: false,
     get cats() { return window.TG.categories; },
     setMega(slug) { this.mega = slug; },
     clearMega() { this.mega = null; },
     activeCat() { return this.cats.find((c) => c.slug === this.mega) || null; },
-    submitSearch() { /* skeleton: would route to kategori.html?q= */ this.clearMega(); },
+    toggleSearch() {
+      this.searchOpen = !this.searchOpen;
+      if (this.searchOpen) this.$nextTick(() => { var el = this.$refs.searchInput; if (el) el.focus(); });
+    },
+    submitSearch() { /* skeleton: would route to kategori.html?q= */ this.searchOpen = false; this.clearMega(); },
   };
 }
 window.tgHeader = tgHeader;
