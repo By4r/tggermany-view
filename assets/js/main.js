@@ -125,14 +125,29 @@ function tgHeader() {
     lastY: 0,
     init() {
       // Bound after the header partial is injected (Alpine initTree runs init()).
+      // Collapsing the utility strip changes the sticky header's flow height,
+      // which can make the browser's scroll-anchoring nudge scrollY and re-fire
+      // this handler in the opposite direction -> flicker. Guard with a short
+      // post-toggle lock + rAF throttle + a hysteresis dead zone.
       this.lastY = window.scrollY || 0;
-      window.addEventListener("scroll", () => {
+      var ticking = false;
+      var lockUntil = 0;
+      var self = this;
+      var evaluate = function () {
+        ticking = false;
         var y = window.scrollY || 0;
-        var dy = y - this.lastY;
-        if (Math.abs(dy) < 6) return;                 // ignore sub-pixel jitter
-        if (dy > 0 && y > 120) this.condensed = true; // scrolling down, past threshold
-        else if (dy < 0) this.condensed = false;      // scrolling up
-        this.lastY = y;
+        var now = (window.performance && performance.now()) || Date.now();
+        if (now < lockUntil) { self.lastY = y; return; }   // ignore settle after a toggle
+        var dy = y - self.lastY;
+        if (Math.abs(dy) < 10) return;                     // dead zone (don't update lastY)
+        var next = self.condensed;
+        if (dy > 0 && y > 160) next = true;                // scrolling down, past threshold
+        else if (dy < 0 || y < 80) next = false;           // scrolling up, or near top
+        if (next !== self.condensed) { self.condensed = next; lockUntil = now + 450; }
+        self.lastY = y;
+      };
+      window.addEventListener("scroll", function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(evaluate); }
       }, { passive: true });
     },
     get cats() { return window.TG.categories; },

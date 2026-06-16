@@ -22,7 +22,7 @@ tailwind.config = {
       fontFamily: {
         sans: ["Poppins", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
       },
-      borderRadius: { sm: "8px", md: "12px", lg: "16px", xl: "24px" },
+      borderRadius: { sm: "5px", md: "8px", lg: "12px", xl: "18px" },
       maxWidth: { container: "1280px" },
       boxShadow: {
         card: "0 4px 16px rgba(5,59,63,.08)",
