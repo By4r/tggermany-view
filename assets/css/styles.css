@@ -296,8 +296,34 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* Search panel (revealed by the header search icon) */
-.search-panel { border-top: 1px solid var(--tg-line); background: #fff; }
-.search-panel .search-pill { max-width: 640px; margin-inline: auto; }
+.search-backdrop { position: fixed; inset: 0; background: rgba(28,36,34,.38); z-index: 40; }
+.search-panel { position: relative; z-index: 55; border-top: 1px solid var(--tg-line); background: #fff; box-shadow: 0 14px 28px rgba(28,36,34,.12); }
+.search-panel__inner { max-width: 720px; margin-inline: auto; padding: 22px 16px 26px; }
+.search-box { display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 8px 0 18px; background: #fff; border: 1.5px solid var(--tg-line); border-radius: var(--r-md); }
+.search-box:focus-within { border-color: var(--tg-primary); box-shadow: 0 0 0 4px rgba(0,168,169,.12); }
+.search-box__icon { color: var(--tg-muted); flex: none; }
+.search-box input { flex: 1; height: 100%; border: 0; outline: none; background: transparent; font-size: 16px; color: var(--tg-ink); }
+.search-box input::placeholder { color: var(--tg-muted); }
+.search-box input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.search-box__submit { align-self: stretch; border: 0; border-radius: calc(var(--r-md) - 2px); padding-inline: 24px; margin: 4px; }
+.search-clear { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border: 0; border-radius: 999px; background: transparent; color: var(--tg-muted); transition: background-color .15s, color .15s; }
+.search-clear:hover { background: var(--tg-line); color: var(--tg-ink); }
+
+/* Live suggestions */
+.search-suggest { margin-top: 12px; border: 1px solid var(--tg-line); border-radius: var(--r-md); overflow: hidden; box-shadow: var(--shadow-card); }
+.search-suggest__row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--tg-line); }
+.search-suggest__row:last-child { border-bottom: 0; }
+.search-suggest__row:hover { background: var(--tg-bg-soft); }
+.search-suggest__thumb { width: 46px; height: 46px; flex: none; border-radius: var(--r-sm); border: 1px solid var(--tg-line); background: var(--tg-bg-soft) center/cover no-repeat; }
+.search-suggest__name { flex: 1; min-width: 0; font-size: 14px; color: var(--tg-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.search-empty { padding: 18px; text-align: center; color: var(--tg-muted); font-size: 14px; }
+
+/* Mega-menu promo (image covers the right half + overlay + TG logo) */
+.mega-promo { position: relative; overflow: hidden; border-radius: var(--r-lg); min-height: 234px; background-size: cover; background-position: center; display: block; }
+.mega-promo__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,48,51,.12) 0%, rgba(3,48,51,.4) 45%, rgba(3,48,51,.82) 100%); }
+.mega-promo__logo { position: absolute; top: 14px; left: 16px; z-index: 2; height: 22px; width: auto; filter: drop-shadow(0 1px 3px rgba(0,0,0,.35)); }
+.mega-promo__content { position: absolute; left: 16px; bottom: 16px; z-index: 2; }
+.mega-promo__title { color: #fff; font-weight: 700; font-size: 18px; margin-bottom: 10px; text-shadow: 0 1px 4px rgba(0,0,0,.3); }
 
 /* Extended-warranty section */
 .warranty-shield { width: 60px; height: 60px; border-radius: var(--r-lg); background: rgba(0,168,169,.10); color: var(--tg-primary-700); display: grid; place-items: center; flex: none; }

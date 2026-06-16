@@ -159,6 +159,16 @@ function tgHeader() {
       this.searchOpen = !this.searchOpen;
       if (this.searchOpen) this.$nextTick(() => { var el = this.$refs.searchInput; if (el) el.focus(); });
     },
+    closeSearch() { this.searchOpen = false; },
+    clearQuery() { this.q = ""; this.$nextTick(() => { var el = this.$refs.searchInput; if (el) el.focus(); }); },
+    results() {
+      var q = (this.q || "").trim().toLocaleLowerCase("tr-TR");
+      if (q.length < 2) return [];
+      return window.TG.products
+        .filter(function (p) { return p.name.toLocaleLowerCase("tr-TR").indexOf(q) !== -1; })
+        .slice(0, 6);
+    },
+    fmt(v) { return window.tgFormatPrice(v); },
     submitSearch() { /* skeleton: would route to kategori.html?q= */ this.searchOpen = false; this.clearMega(); },
   };
 }
