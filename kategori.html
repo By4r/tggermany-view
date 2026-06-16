@@ -21,9 +21,11 @@
 
   <main x-data="tgCatalog()" x-init="init()">
 
-    <!-- Breadcrumb + page header -->
-    <div class="page-header">
-      <div class="container-tg">
+    <!-- Visual + centered page hero (bg = active category photo, banner fallback) -->
+    <section class="page-hero" style="--hero-scrim:.7">
+      <div class="page-hero__bg" :style="'background-image:url('+((cat && cat.photo) || 'assets/img/banners/hero.webp')+')'" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
         <nav class="breadcrumb" aria-label="Sayfa yolu">
           <a href="index.html">Ana Sayfa</a>
           <span class="sep">/</span>
@@ -34,12 +36,10 @@
             <span class="current">Tüm Ürünler</span>
           </template>
         </nav>
-        <div class="page-header__inner" style="padding-top:0">
-          <h1 class="page-header__title" x-text="cat ? cat.name : 'Tüm Ürünler'"></h1>
-          <p class="page-header__sub" x-text="cat ? cat.desc : 'TG Germany ürün ailelerini keşfedin.'"></p>
-        </div>
+        <h1 class="page-hero__title" x-text="cat ? cat.name : 'Tüm Ürünler'"></h1>
+        <p class="page-hero__sub" x-text="cat ? cat.desc : 'TG Germany ürün ailelerini keşfedin.'"></p>
       </div>
-    </div>
+    </section>
 
     <section class="section" style="padding-top:24px">
       <div class="container-tg">

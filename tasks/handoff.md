@@ -5,6 +5,10 @@
 
 ## Where we are
 
+**WAVE — Görselli+merkezi hero + form prefill DONE ✅ (canlıda):** Tüm iç-sayfa page-header'ı tek `.page-hero` pattern'ine geçti — görselli (div+bg-cover + düz koyu-teal scrim, gradient yok), **merkezi** (breadcrumb+eyebrow+başlık+alt-başlık), tüm sayfalarda **tutarlı** (1440'ta 284px, aynı scrim/tipografi); yalnız görsel+metin sayfaya göre. Kapsam: 21 sayfa (urun = galeri-hero, auth = split — hariç). AA ≥4.5 doğrulandı (ölçülen 5.21–13.70; per-sayfa `--hero-scrim` knob). Akış-kritik formlar **demo prefill** (`window.tgDemo`) + validation **blur/submit-timing** (`window.tgFormUX()` — açılışta hata yok): odeme (adres+kart `4242…`+captcha), giris (`tgEnsureDemoUser` ile login çalışır), kayit (`emailNew`), iletisim, kurumsal-satis, ek-garanti, siparis-takip. Site'nin GERÇEK iletişim verisi `.data-tbd` kaldı (prefill yalnız form input demo'su). Foundation Faz 0 mini = `.page-hero` CSS + `tgDemo`/`tgFormUX`/`tgEnsureDemoUser`; teammate'ler foundation'a yazmadı. Uçtan-uca checkout/giriş prefill'le tıklanıyor, 0 console.
+
+---
+
 **FULL STOREFRONT COMPLETE (28 sayfa)** — homepage + **27 iç sayfa** (tam production e-ticaret akışı, UI-only, localStorage mock) implement edildi, doğrulandı ve canlıda. Static HTML + Tailwind (CDN) + Alpine.js, build yok.
 
 **Implement kurgusu (uygulandı):** lead (delegate) + **Faz 0 tek-yazar foundation** (donduruldu, `91b5b61`) + **4 paralel teammate** (shop · auth-account · kurumsal · destek-yasal), her biri frontend-design kalite lensi + kendi eval-iterate (≥2 tur, 3 breakpoint Playwright) döngüsüyle. Lead denetimi: her sayfa statik + bağımsız console/hidrate/state smoke-test'ten geçti.

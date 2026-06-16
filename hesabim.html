@@ -20,20 +20,21 @@
   <div data-include="partials/header.html"></div>
 
   <main x-data="tgAccount()" x-init="init()">
-    <!-- Page header -->
-    <div class="page-header">
-      <div class="container-tg">
+    <!-- Page hero (görselli + merkezi) -->
+    <section class="page-hero" style="--hero-scrim:.72">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/trust-bg.jpg')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
         <nav class="breadcrumb" aria-label="Sayfa konumu">
           <a href="index.html">Ana Sayfa</a><span class="sep">/</span><span class="current">Hesabım</span>
         </nav>
-        <div class="page-header__inner" style="padding-top:0">
-          <h1 class="page-header__title">Hesabım</h1>
-          <p class="page-header__sub" x-show="$store.auth.loggedIn" x-cloak>
-            Merhaba <b class="text-ink" x-text="$store.auth.fullName"></b>, hesabını buradan yönetebilirsin.
-          </p>
-        </div>
+        <span class="page-hero__eyebrow">Hesabım</span>
+        <h1 class="page-hero__title">Hesabım</h1>
+        <p class="page-hero__sub" x-show="$store.auth.loggedIn" x-cloak>
+          Merhaba <b class="text-white" style="color:#fff" x-text="$store.auth.fullName"></b>, hesabını buradan yönetebilirsin.
+        </p>
       </div>
-    </div>
+    </section>
 
     <section class="section">
       <div class="container-tg">

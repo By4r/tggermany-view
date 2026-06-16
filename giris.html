@@ -20,7 +20,7 @@
   <div data-include="partials/header.html"></div>
 
   <main>
-    <section class="auth" x-data="tgLogin()">
+    <section class="auth" x-data="Object.assign(tgFormUX(), tgLogin())">
       <!-- Left: form -->
       <div class="auth__form">
         <div class="auth__card">
@@ -50,9 +50,10 @@
 
           <form @submit.prevent="submit()" novalidate>
             <!-- E-posta mode -->
-            <div class="field" :class="err.id && 'field--error'" x-show="mode==='eposta'">
+            <div class="field" :class="(showErr('email') && !email.trim()) && 'field--error'" x-show="mode==='eposta'">
               <label class="field__label" for="li-email">E-posta</label>
-              <input id="li-email" type="email" class="field__input" x-model="email" autocomplete="email" placeholder="ornek@eposta.com" />
+              <input id="li-email" type="email" class="field__input" x-model="email" @blur="touch('email')" autocomplete="email" placeholder="ornek@eposta.com" />
+              <span class="field__error" x-show="showErr('email') && !email.trim()" x-cloak>E-posta adresinizi girin.</span>
             </div>
 
             <!-- Telefon mode (data-tbd, mock) -->
@@ -62,9 +63,10 @@
               <span class="field__hint">Telefonla giriş yakında — şimdilik e-posta ile giriş yapın.</span>
             </div>
 
-            <div class="field" :class="err.id && 'field--error'">
+            <div class="field" :class="((showErr('password') && !password) || err.id) && 'field--error'">
               <label class="field__label" for="li-pwd">Şifre</label>
-              <input id="li-pwd" type="password" class="field__input" x-model="password" autocomplete="current-password" placeholder="Şifreniz" />
+              <input id="li-pwd" type="password" class="field__input" x-model="password" @blur="touch('password')" autocomplete="current-password" placeholder="Şifreniz" />
+              <span class="field__error" x-show="showErr('password') && !password" x-cloak>Şifrenizi girin.</span>
               <span class="field__error" x-show="err.id" x-text="err.msg" x-cloak></span>
             </div>
 
@@ -118,7 +120,7 @@
     function tgLogin() {
       return {
         mode: 'eposta',
-        email: '', phone: '', password: '', remember: true,
+        email: window.tgDemo.email, phone: '', password: window.tgDemo.password, remember: true,
         err: { id: false, msg: '' },
         nextQuery() {
           var n = window.TG.parseQuery('next');
@@ -134,6 +136,7 @@
           this.redirect();
         },
         submit() {
+          this.touchAll(['email', 'password']);
           this.err = { id: false, msg: '' };
           if (this.mode === 'telefon') {
             this.err = { id: true, msg: 'Telefonla giriş yakında. Lütfen e-posta ile giriş yapın.' };

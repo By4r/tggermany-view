@@ -21,19 +21,24 @@
 
   <main x-data="tgCheckout()" x-init="init()">
 
-    <div class="container-tg">
-      <nav class="breadcrumb" aria-label="Sayfa yolu">
-        <a href="index.html">Ana Sayfa</a>
-        <span class="sep">/</span>
-        <a href="sepet.html">Sepetim</a>
-        <span class="sep">/</span>
-        <span class="current">Ödeme</span>
-      </nav>
-    </div>
+    <section class="page-hero" style="--hero-scrim:.64">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/hero.webp')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
+        <nav class="breadcrumb" aria-label="Sayfa yolu">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <a href="sepet.html">Sepetim</a>
+          <span class="sep">/</span>
+          <span class="current">Ödeme</span>
+        </nav>
+        <h1 class="page-hero__title">Ödeme</h1>
+        <p class="page-hero__sub">Hesap, teslimat ve ödeme bilgilerinizi güvenle tamamlayın.</p>
+      </div>
+    </section>
 
-    <section class="section" style="padding-top:8px" x-show="$store.cart.count > 0" x-cloak>
+    <section class="section" style="padding-top:32px" x-show="$store.cart.count > 0" x-cloak>
       <div class="container-tg">
-        <h1 class="t-h1 mb-6">Ödeme</h1>
 
         <!-- Stepper -->
         <div class="stepper" aria-hidden="true">
@@ -74,8 +79,8 @@
                   <div class="auth__divider">veya</div>
                   <div class="field">
                     <label class="field__label" for="guestEmail">E-posta adresi <span class="req">*</span></label>
-                    <input id="guestEmail" type="email" class="field__input" x-model="email" placeholder="ornek@eposta.com" :class="err.email && 'border-error'" />
-                    <span class="field__error" x-show="err.email" x-text="err.email"></span>
+                    <input id="guestEmail" type="email" class="field__input" x-model="email" @blur="touch('email')" placeholder="ornek@eposta.com" :class="msg('email') && 'border-error'" />
+                    <span class="field__error" x-show="msg('email')" x-text="msg('email')"></span>
                     <span class="field__hint">Sipariş onayı bu adrese gönderilir.</span>
                   </div>
                   <button type="button" class="btn" @click="guestContinue()">Misafir Olarak Devam Et</button>
@@ -110,34 +115,34 @@
                 <div class="grid sm:grid-cols-2 gap-x-4">
                   <div class="field">
                     <label class="field__label" for="adAd">Ad <span class="req">*</span></label>
-                    <input id="adAd" class="field__input" x-model="addr.ad" :class="err.ad && 'border-error'" />
-                    <span class="field__error" x-show="err.ad" x-text="err.ad"></span>
+                    <input id="adAd" class="field__input" x-model="addr.ad" @blur="touch('ad')" :class="msg('ad') && 'border-error'" />
+                    <span class="field__error" x-show="msg('ad')" x-text="msg('ad')"></span>
                   </div>
                   <div class="field">
                     <label class="field__label" for="adSoyad">Soyad <span class="req">*</span></label>
-                    <input id="adSoyad" class="field__input" x-model="addr.soyad" :class="err.soyad && 'border-error'" />
-                    <span class="field__error" x-show="err.soyad" x-text="err.soyad"></span>
+                    <input id="adSoyad" class="field__input" x-model="addr.soyad" @blur="touch('soyad')" :class="msg('soyad') && 'border-error'" />
+                    <span class="field__error" x-show="msg('soyad')" x-text="msg('soyad')"></span>
                   </div>
                   <div class="field">
                     <label class="field__label" for="adTel">Telefon <span class="req">*</span></label>
-                    <input id="adTel" type="tel" class="field__input" x-model="addr.telefon" :class="err.telefon && 'border-error'" placeholder="5xx xxx xx xx" />
-                    <span class="field__error" x-show="err.telefon" x-text="err.telefon"></span>
+                    <input id="adTel" type="tel" class="field__input" x-model="addr.telefon" @blur="touch('telefon')" :class="msg('telefon') && 'border-error'" placeholder="5xx xxx xx xx" />
+                    <span class="field__error" x-show="msg('telefon')" x-text="msg('telefon')"></span>
                   </div>
                   <div class="field">
                     <label class="field__label" for="adIl">İl <span class="req">*</span></label>
-                    <input id="adIl" class="field__input" x-model="addr.il" :class="err.il && 'border-error'" />
-                    <span class="field__error" x-show="err.il" x-text="err.il"></span>
+                    <input id="adIl" class="field__input" x-model="addr.il" @blur="touch('il')" :class="msg('il') && 'border-error'" />
+                    <span class="field__error" x-show="msg('il')" x-text="msg('il')"></span>
                   </div>
                   <div class="field">
                     <label class="field__label" for="adIlce">İlçe <span class="req">*</span></label>
-                    <input id="adIlce" class="field__input" x-model="addr.ilce" :class="err.ilce && 'border-error'" />
-                    <span class="field__error" x-show="err.ilce" x-text="err.ilce"></span>
+                    <input id="adIlce" class="field__input" x-model="addr.ilce" @blur="touch('ilce')" :class="msg('ilce') && 'border-error'" />
+                    <span class="field__error" x-show="msg('ilce')" x-text="msg('ilce')"></span>
                   </div>
                 </div>
                 <div class="field">
                   <label class="field__label" for="adAdres">Açık adres <span class="req">*</span></label>
-                  <textarea id="adAdres" x-model="addr.adres" :class="err.adres && 'border-error'" placeholder="Mahalle, sokak, bina ve daire no"></textarea>
-                  <span class="field__error" x-show="err.adres" x-text="err.adres"></span>
+                  <textarea id="adAdres" x-model="addr.adres" @blur="touch('adres')" :class="msg('adres') && 'border-error'" placeholder="Mahalle, sokak, bina ve daire no"></textarea>
+                  <span class="field__error" x-show="msg('adres')" x-text="msg('adres')"></span>
                 </div>
                 <label class="consent" x-show="$store.auth.loggedIn">
                   <input type="checkbox" x-model="saveAddr" />
@@ -182,32 +187,32 @@
               </div>
               <div class="field">
                 <label class="field__label" for="cardName">Kart Üzerindeki İsim <span class="req">*</span></label>
-                <input id="cardName" class="field__input" x-model="card.name" :class="err.cardName && 'border-error'" />
-                <span class="field__error" x-show="err.cardName" x-text="err.cardName"></span>
+                <input id="cardName" class="field__input" x-model="card.name" @blur="touch('cardName')" :class="msg('cardName') && 'border-error'" />
+                <span class="field__error" x-show="msg('cardName')" x-text="msg('cardName')"></span>
               </div>
               <div class="field">
                 <label class="field__label" for="cardNo">Kart Numarası <span class="req">*</span></label>
-                <input id="cardNo" class="field__input" inputmode="numeric" x-model="card.no" placeholder="0000 0000 0000 0000" :class="err.cardNo && 'border-error'" />
-                <span class="field__error" x-show="err.cardNo" x-text="err.cardNo"></span>
+                <input id="cardNo" class="field__input" inputmode="numeric" x-model="card.no" @blur="touch('cardNo')" placeholder="0000 0000 0000 0000" :class="msg('cardNo') && 'border-error'" />
+                <span class="field__error" x-show="msg('cardNo')" x-text="msg('cardNo')"></span>
               </div>
               <div class="grid grid-cols-2 gap-x-4">
                 <div class="field">
                   <label class="field__label" for="cardExp">Son Kullanma <span class="req">*</span></label>
-                  <input id="cardExp" class="field__input" x-model="card.exp" placeholder="AA/YY" :class="err.cardExp && 'border-error'" />
-                  <span class="field__error" x-show="err.cardExp" x-text="err.cardExp"></span>
+                  <input id="cardExp" class="field__input" x-model="card.exp" @blur="touch('cardExp')" placeholder="AA/YY" :class="msg('cardExp') && 'border-error'" />
+                  <span class="field__error" x-show="msg('cardExp')" x-text="msg('cardExp')"></span>
                 </div>
                 <div class="field">
                   <label class="field__label" for="cardCvv">CVV <span class="req">*</span></label>
-                  <input id="cardCvv" class="field__input" inputmode="numeric" x-model="card.cvv" placeholder="123" :class="err.cardCvv && 'border-error'" />
-                  <span class="field__error" x-show="err.cardCvv" x-text="err.cardCvv"></span>
+                  <input id="cardCvv" class="field__input" inputmode="numeric" x-model="card.cvv" @blur="touch('cardCvv')" placeholder="123" :class="msg('cardCvv') && 'border-error'" />
+                  <span class="field__error" x-show="msg('cardCvv')" x-text="msg('cardCvv')"></span>
                 </div>
               </div>
               <div class="recaptcha-ph mb-4">
-                <input type="checkbox" x-model="captcha" aria-label="Robot değilim" />
+                <input type="checkbox" x-model="captcha" @change="touch('captcha')" aria-label="Robot değilim" />
                 <span>Robot değilim</span>
                 <span class="ml-auto text-[11px] leading-tight">reCAPTCHA<br>(demo)</span>
               </div>
-              <span class="field__error" x-show="err.captcha" x-text="err.captcha"></span>
+              <span class="field__error" x-show="msg('captcha')" x-text="msg('captcha')"></span>
               <div class="flex justify-between mt-2">
                 <button type="button" class="btn btn--secondary" @click="prev()">Geri</button>
                 <button type="button" class="btn" @click="submitPayment()">Devam Et</button>
@@ -311,20 +316,23 @@
   <script src="assets/js/main.js"></script>
   <script>
     function tgCheckout() {
-      return {
+      var d = window.tgDemo || {};
+      // NOTE: merge order matters — tgFormUX() is the SOURCE so Object.assign copies
+      // its plain data/methods onto our literal WITHOUT invoking our getters.
+      return Object.assign({
         steps: ["Hesap", "Adres", "Kargo", "Ödeme", "Onay"],
         step: 1,
-        email: "",
+        email: d.email || "",
         useAddrId: "new",
-        addr: { ad: "", soyad: "", telefon: "", il: "", ilce: "", adres: "" },
+        addr: { ad: d.ad || "", soyad: d.soyad || "", telefon: d.telefon || "", il: d.il || "", ilce: d.ilce || "", adres: d.adres || "" },
         saveAddr: true,
         shipMethods: [
           { id: "standart", name: "Standart Kargo", eta: "2–4 iş günü içinde teslim", fee: 49.9 },
           { id: "hizli", name: "Hızlı Kargo", eta: "1–2 iş günü içinde teslim", fee: 79.9 },
         ],
         shipMethod: "standart",
-        card: { name: "", no: "", exp: "", cvv: "" },
-        captcha: false,
+        card: { name: d.cardName || "", no: d.cardNo || "", exp: d.cardExp || "", cvv: d.cardCvv || "" },
+        captcha: true,
         consent1: false,
         consent2: false,
         confirmAddr: null,
@@ -332,7 +340,7 @@
         init() {
           if (this.$store.cart.count === 0) { location.replace("sepet.html"); return; }
           if (this.$store.auth.loggedIn) {
-            this.email = this.$store.auth.user.email || "";
+            this.email = this.$store.auth.user.email || this.email;
             var def = this.$store.addresses.default;
             this.useAddrId = def ? def.id : "new";
           } else {
@@ -355,27 +363,42 @@
         next() { this.step = Math.min(5, this.step + 1); window.scrollTo({ top: 0, behavior: "smooth" }); },
         prev() { this.step = Math.max(1, this.step - 1); window.scrollTo({ top: 0, behavior: "smooth" }); },
         validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); },
+        // --- live validity (error text shown only when showErr(field) is true) ---
+        errFor(field) {
+          switch (field) {
+            case "email": return this.validEmail(this.email) ? "" : "Geçerli bir e-posta adresi girin.";
+            case "ad": return this.addr.ad.trim() ? "" : "Ad gerekli.";
+            case "soyad": return this.addr.soyad.trim() ? "" : "Soyad gerekli.";
+            case "telefon": return this.addr.telefon.trim() ? "" : "Telefon gerekli.";
+            case "il": return this.addr.il.trim() ? "" : "İl gerekli.";
+            case "ilce": return this.addr.ilce.trim() ? "" : "İlçe gerekli.";
+            case "adres": return this.addr.adres.trim() ? "" : "Açık adres gerekli.";
+            case "cardName": return this.card.name.trim() ? "" : "İsim gerekli.";
+            case "cardNo": return this.card.no.replace(/\s/g, "").length >= 12 ? "" : "Geçerli bir kart numarası girin.";
+            case "cardExp": return /^\d{2}\/\d{2}$/.test(this.card.exp.trim()) ? "" : "AA/YY biçiminde girin.";
+            case "cardCvv": return /^\d{3,4}$/.test(this.card.cvv.trim()) ? "" : "Geçerli bir CVV girin.";
+            case "captcha": return this.captcha ? "" : "Lütfen doğrulamayı tamamlayın.";
+            default: return "";
+          }
+        },
+        // error text shown to the user (gated by touched/submitted via showErr)
+        msg(field) { return this.showErr(field) ? this.errFor(field) : ""; },
         guestContinue() {
-          this.err = {};
-          if (!this.validEmail(this.email)) { this.err = { email: "Geçerli bir e-posta adresi girin." }; return; }
+          this.touchAll(["email"]);
+          if (this.errFor("email")) return;
+          this.submitted = false;
           this.next();
         },
         submitAddress() {
-          this.err = {};
           if (this.useAddrId !== "new" && this.$store.addresses.list.length) {
             this.confirmAddr = this.$store.addresses.list.find(function (a) { return a.id === this.useAddrId; }.bind(this));
             this.next();
             return;
           }
-          var e = {};
-          if (!this.addr.ad.trim()) e.ad = "Ad gerekli.";
-          if (!this.addr.soyad.trim()) e.soyad = "Soyad gerekli.";
-          if (!this.addr.telefon.trim()) e.telefon = "Telefon gerekli.";
-          if (!this.addr.il.trim()) e.il = "İl gerekli.";
-          if (!this.addr.ilce.trim()) e.ilce = "İlçe gerekli.";
-          if (!this.addr.adres.trim()) e.adres = "Açık adres gerekli.";
-          this.err = e;
-          if (Object.keys(e).length) return;
+          var fields = ["ad", "soyad", "telefon", "il", "ilce", "adres"];
+          this.touchAll(fields);
+          if (fields.some(function (f) { return this.errFor(f); }.bind(this))) return;
+          this.submitted = false;
           this.confirmAddr = Object.assign({ baslik: "Teslimat" }, this.addr);
           if (this.$store.auth.loggedIn && this.saveAddr) {
             this.$store.addresses.add(Object.assign({ baslik: "Teslimat" }, this.addr));
@@ -383,15 +406,10 @@
           this.next();
         },
         submitPayment() {
-          var e = {};
-          if (!this.card.name.trim()) e.cardName = "İsim gerekli.";
-          var digits = this.card.no.replace(/\s/g, "");
-          if (digits.length < 12) e.cardNo = "Geçerli bir kart numarası girin.";
-          if (!/^\d{2}\/\d{2}$/.test(this.card.exp.trim())) e.cardExp = "AA/YY biçiminde girin.";
-          if (!/^\d{3,4}$/.test(this.card.cvv.trim())) e.cardCvv = "Geçerli bir CVV girin.";
-          if (!this.captcha) e.captcha = "Lütfen doğrulamayı tamamlayın.";
-          this.err = e;
-          if (Object.keys(e).length) return;
+          var fields = ["cardName", "cardNo", "cardExp", "cardCvv", "captcha"];
+          this.touchAll(fields);
+          if (fields.some(function (f) { return this.errFor(f); }.bind(this))) return;
+          this.submitted = false;
           this.next();
         },
         placeOrder() {
@@ -420,7 +438,7 @@
           this.$store.toast.push("Siparişiniz oluşturuldu");
           location.href = "siparis-tamamlandi.html?id=" + encodeURIComponent(id);
         },
-      };
+      }, tgFormUX());
     }
     window.tgCheckout = tgCheckout;
   </script>

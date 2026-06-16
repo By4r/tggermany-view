@@ -24,23 +24,24 @@
     <!-- ===== Valid order ===== -->
     <template x-if="order">
       <div>
-        <div class="page-header">
-          <div class="container-tg">
+        <section class="page-hero" style="--hero-scrim:.72">
+          <div class="page-hero__bg" style="background-image:url('assets/img/banners/trust-bg.jpg')" aria-hidden="true"></div>
+          <div class="page-hero__scrim" aria-hidden="true"></div>
+          <div class="page-hero__content">
             <nav class="breadcrumb" aria-label="Sayfa konumu">
               <a href="index.html">Ana Sayfa</a><span class="sep">/</span>
               <a href="hesabim.html#siparisler">Siparişlerim</a><span class="sep">/</span>
               <span class="current" x-text="order.id"></span>
             </nav>
-            <div class="page-header__inner" style="padding-top:0">
-              <div class="flex items-center gap-3 flex-wrap">
-                <h1 class="page-header__title" x-text="'Sipariş ' + order.id"></h1>
-                <span class="status-badge" :class="badgeClass(order.status)" x-text="order.status"></span>
-                <span class="demo-tag" x-show="order.demo" x-cloak>Demo verisi</span>
-              </div>
-              <p class="page-header__sub" x-text="fmtDate(order.date) + ' tarihinde verildi'"></p>
+            <span class="page-hero__eyebrow">Sipariş Detayı</span>
+            <div class="flex items-center justify-center gap-3 flex-wrap">
+              <h1 class="page-hero__title" x-text="'Sipariş ' + order.id"></h1>
+              <span class="status-badge" :class="badgeClass(order.status)" x-text="order.status"></span>
+              <span class="demo-tag" x-show="order.demo" x-cloak>Demo verisi</span>
             </div>
+            <p class="page-hero__sub" x-text="fmtDate(order.date) + ' tarihinde verildi'"></p>
           </div>
-        </div>
+        </section>
 
         <section class="section">
           <div class="container-tg">
@@ -176,15 +177,19 @@
     <!-- ===== Missing / invalid order ===== -->
     <template x-if="!order">
       <div>
-        <div class="page-header">
-          <div class="container-tg">
+        <section class="page-hero" style="--hero-scrim:.72">
+          <div class="page-hero__bg" style="background-image:url('assets/img/banners/trust-bg.jpg')" aria-hidden="true"></div>
+          <div class="page-hero__scrim" aria-hidden="true"></div>
+          <div class="page-hero__content">
             <nav class="breadcrumb" aria-label="Sayfa konumu">
               <a href="index.html">Ana Sayfa</a><span class="sep">/</span>
               <a href="hesabim.html#siparisler">Siparişlerim</a><span class="sep">/</span>
               <span class="current">Sipariş Detayı</span>
             </nav>
+            <span class="page-hero__eyebrow">Sipariş Detayı</span>
+            <h1 class="page-hero__title">Sipariş Detayı</h1>
           </div>
-        </div>
+        </section>
         <section class="section">
           <div class="container-tg" style="max-width:560px">
             <div class="account-card empty-state">

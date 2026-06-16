@@ -23,21 +23,19 @@
   <div data-include="partials/header.html"></div>
 
   <main>
-    <!-- Breadcrumb -->
-    <div class="container-tg">
-      <nav class="breadcrumb" aria-label="Sayfa yolu">
-        <a href="index.html">Ana Sayfa</a>
-        <span class="sep">/</span>
-        <span class="current">Kurumsal Satış</span>
-      </nav>
-    </div>
-
-    <!-- Page header -->
-    <section class="page-header">
-      <div class="container-tg page-header__inner">
-        <span class="label label--accent">B2B Kurumsal Hediye</span>
-        <h1 class="page-header__title mt-2">Kurumsal Satış</h1>
-        <p class="page-header__sub">Markanıza özel kişiselleştirilebilir teknoloji ürünleriyle çalışanlarınıza, müşterilerinize ve iş ortaklarınıza kalıcı bir izlenim bırakın.</p>
+    <!-- Visual + centered hero header -->
+    <section class="page-hero" style="--hero-scrim:.66">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/trust-bg.jpg')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
+        <nav class="breadcrumb" aria-label="Sayfa yolu">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Kurumsal Satış</span>
+        </nav>
+        <span class="page-hero__eyebrow">B2B Kurumsal Hediye</span>
+        <h1 class="page-hero__title">Kurumsal Satış</h1>
+        <p class="page-hero__sub">Markanıza özel kişiselleştirilebilir teknoloji ürünleriyle çalışanlarınıza, müşterilerinize ve iş ortaklarınıza kalıcı bir izlenim bırakın.</p>
       </div>
     </section>
 
@@ -100,7 +98,7 @@
 
     <!-- Request form -->
     <section class="section" id="talep">
-      <div class="container-tg" x-data="kurumsalForm()">
+      <div class="container-tg" x-data="Object.assign(tgFormUX(), kurumsalForm())">
         <div class="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
           <!-- Intro column -->
           <div>
@@ -131,28 +129,28 @@
               <div class="grid gap-x-4 sm:grid-cols-2">
                 <label class="field">
                   <span class="field__label">Firma Adı <span class="req">*</span></span>
-                  <input type="text" class="field__input" x-model="f.firma" :class="err.firma && 'field__input'" />
-                  <span class="field__error" x-show="err.firma" x-text="err.firma" x-cloak></span>
+                  <input type="text" class="field__input" x-model="f.firma" @blur="touch('firma')" />
+                  <span class="field__error" x-show="showErr('firma') && !f.firma.trim()" x-cloak>Firma adı zorunludur.</span>
                 </label>
                 <label class="field">
                   <span class="field__label">Yetkili Kişi <span class="req">*</span></span>
-                  <input type="text" class="field__input" x-model="f.yetkili" />
-                  <span class="field__error" x-show="err.yetkili" x-text="err.yetkili" x-cloak></span>
+                  <input type="text" class="field__input" x-model="f.yetkili" @blur="touch('yetkili')" />
+                  <span class="field__error" x-show="showErr('yetkili') && !f.yetkili.trim()" x-cloak>Yetkili kişi zorunludur.</span>
                 </label>
                 <label class="field">
                   <span class="field__label">E-posta <span class="req">*</span></span>
-                  <input type="email" class="field__input" x-model="f.eposta" />
-                  <span class="field__error" x-show="err.eposta" x-text="err.eposta" x-cloak></span>
+                  <input type="email" class="field__input" x-model="f.eposta" @blur="touch('eposta')" />
+                  <span class="field__error" x-show="showErr('eposta') && epostaErr" x-text="epostaErr" x-cloak></span>
                 </label>
                 <label class="field">
                   <span class="field__label">Telefon <span class="req">*</span></span>
-                  <input type="tel" class="field__input" x-model="f.telefon" placeholder="05XX XXX XX XX" />
-                  <span class="field__error" x-show="err.telefon" x-text="err.telefon" x-cloak></span>
+                  <input type="tel" class="field__input" x-model="f.telefon" @blur="touch('telefon')" placeholder="05XX XXX XX XX" />
+                  <span class="field__error" x-show="showErr('telefon') && !f.telefon.trim()" x-cloak>Telefon zorunludur.</span>
                 </label>
                 <label class="field">
                   <span class="field__label">Tahmini Adet <span class="req">*</span></span>
-                  <input type="number" min="1" class="field__input" x-model="f.adet" placeholder="Örn. 250" />
-                  <span class="field__error" x-show="err.adet" x-text="err.adet" x-cloak></span>
+                  <input type="number" min="1" class="field__input" x-model="f.adet" @blur="touch('adet')" placeholder="Örn. 250" />
+                  <span class="field__error" x-show="showErr('adet') && adetErr" x-text="adetErr" x-cloak></span>
                 </label>
                 <label class="field">
                   <span class="field__label">İlgilendiğiniz Ürün</span>
@@ -168,7 +166,7 @@
               <!-- Logo upload -->
               <div class="field">
                 <span class="field__label">Logo / Marka Görseli</span>
-                <div class="file-upload" :class="err.dosya && 'field--error'">
+                <div class="file-upload" :class="dosyaErr && 'field--error'">
                   <label class="btn btn--secondary btn--sm" style="margin:0;cursor:pointer">
                     Dosya Seç
                     <input type="file" class="sr-only" accept=".pdf,.ai,.psd,.tiff,.tif,application/pdf,application/postscript,image/vnd.adobe.photoshop,image/tiff" @change="pickFile($event)" />
@@ -176,7 +174,7 @@
                   <span class="file-upload__name" x-text="f.dosyaAd || 'Henüz dosya seçilmedi'"></span>
                 </div>
                 <span class="field__hint">Yalnızca PDF, AI, PSD, TIFF kabul edilir.</span>
-                <span class="field__error" x-show="err.dosya" x-text="err.dosya" x-cloak></span>
+                <span class="field__error" x-show="dosyaErr" x-cloak>Yalnızca PDF, AI, PSD, TIFF kabul edilir.</span>
               </div>
 
               <label class="field">
@@ -190,11 +188,11 @@
               </label>
 
               <!-- KVKK consent -->
-              <label class="consent" :class="err.kvkk && 'field--error'">
-                <input type="checkbox" x-model="f.kvkk" />
+              <label class="consent" :class="showErr('kvkk') && !f.kvkk && 'field--error'">
+                <input type="checkbox" x-model="f.kvkk" @change="touch('kvkk')" />
                 <span><a href="kvkk.html" target="_blank">KVKK Aydınlatma Metni</a>'ni okudum, kişisel verilerimin talebim kapsamında işlenmesini kabul ediyorum. <span class="req" style="color:var(--tg-error)">*</span></span>
               </label>
-              <span class="field__error" x-show="err.kvkk" x-text="err.kvkk" x-cloak style="margin-top:-6px;margin-bottom:12px"></span>
+              <span class="field__error" x-show="showErr('kvkk') && !f.kvkk" x-cloak style="margin-top:-6px;margin-bottom:12px">Devam etmek için KVKK metnini onaylayın.</span>
 
               <!-- reCAPTCHA placeholder -->
               <div class="recaptcha-ph mb-4">
@@ -226,36 +224,48 @@
   <script>
     function kurumsalForm() {
       var OK_EXT = ["pdf", "ai", "psd", "tiff", "tif"];
+      var D = window.tgDemo || {};
+      var prefill = function () {
+        return {
+          firma: D.firma || "", yetkili: D.yetkili || "", eposta: D.email || "",
+          telefon: D.telefon || "", adet: D.adet || "", urun: "",
+          dosyaAd: "", dosyaGecerli: true,
+          adres: D.adres || "", not: D.mesaj || "",
+          kvkk: true,       // önceden onaylı — "Talebi Gönder" doğrudan çalışsın
+          captcha: true,    // reCAPTCHA-demo önceden işaretli
+        };
+      };
       return {
         submitted: false,
-        f: { firma: "", yetkili: "", eposta: "", telefon: "", adet: "", urun: "", dosyaAd: "", dosyaGecerli: true, adres: "", not: "", kvkk: false, captcha: false },
-        err: {},
+        f: prefill(),
+        // dosya opsiyonel: hata yalnız geçersiz uzantı seçilince görünür (event-driven)
+        get dosyaErr() { return this.f.dosyaAd && !this.f.dosyaGecerli; },
+        get epostaErr() {
+          var v = (this.f.eposta || "").trim();
+          if (!v) return "E-posta zorunludur.";
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "Geçerli bir e-posta girin.";
+          return "";
+        },
+        get adetErr() {
+          var v = String(this.f.adet || "").trim();
+          if (!v) return "Tahmini adet zorunludur.";
+          if (Number(this.f.adet) < 1) return "Adet en az 1 olmalıdır.";
+          return "";
+        },
         pickFile: function (e) {
           var file = e.target.files && e.target.files[0];
-          if (!file) { this.f.dosyaAd = ""; this.f.dosyaGecerli = true; this.err.dosya = ""; return; }
+          if (!file) { this.f.dosyaAd = ""; this.f.dosyaGecerli = true; return; }
           var ext = (file.name.split(".").pop() || "").toLowerCase();
           this.f.dosyaAd = file.name;
-          if (OK_EXT.indexOf(ext) === -1) {
-            this.f.dosyaGecerli = false;
-            this.err.dosya = "Yalnızca PDF, AI, PSD, TIFF kabul edilir.";
-          } else {
-            this.f.dosyaGecerli = true;
-            this.err.dosya = "";
-          }
+          this.f.dosyaGecerli = OK_EXT.indexOf(ext) !== -1;
+        },
+        invalid: function () {
+          return !this.f.firma.trim() || !this.f.yetkili.trim() || !!this.epostaErr ||
+            !this.f.telefon.trim() || !!this.adetErr || !!this.dosyaErr || !this.f.kvkk;
         },
         submit: function () {
-          var e = {};
-          if (!this.f.firma.trim()) e.firma = "Firma adı zorunludur.";
-          if (!this.f.yetkili.trim()) e.yetkili = "Yetkili kişi zorunludur.";
-          if (!this.f.eposta.trim()) e.eposta = "E-posta zorunludur.";
-          else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.f.eposta.trim())) e.eposta = "Geçerli bir e-posta girin.";
-          if (!this.f.telefon.trim()) e.telefon = "Telefon zorunludur.";
-          if (!String(this.f.adet).trim()) e.adet = "Tahmini adet zorunludur.";
-          else if (Number(this.f.adet) < 1) e.adet = "Adet en az 1 olmalıdır.";
-          if (this.f.dosyaAd && !this.f.dosyaGecerli) e.dosya = "Yalnızca PDF, AI, PSD, TIFF kabul edilir.";
-          if (!this.f.kvkk) e.kvkk = "Devam etmek için KVKK metnini onaylayın.";
-          this.err = e;
-          if (Object.keys(e).length) {
+          this.touchAll(["firma", "yetkili", "eposta", "telefon", "adet", "kvkk"]);
+          if (this.invalid()) {
             this.$store.toast.push("Lütfen formdaki eksik alanları kontrol edin.", "error");
             return;
           }
@@ -264,8 +274,8 @@
         },
         reset: function () {
           this.submitted = false;
-          this.f = { firma: "", yetkili: "", eposta: "", telefon: "", adet: "", urun: "", dosyaAd: "", dosyaGecerli: true, adres: "", not: "", kvkk: false, captcha: false };
-          this.err = {};
+          this.f = prefill();
+          this.resetUX();
         },
       };
     }

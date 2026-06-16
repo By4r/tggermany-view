@@ -99,5 +99,30 @@ Yasal/bilgi: `.legal`(h2/h3/p/ul/li) `.legal__toc` `.legal__updated`.
 
 Mevcut (reuse): `.container-tg .section .bg-soft .ratio-box(.ratio-1-1/4-3/16-9/21-9) .t-h1 .t-h2 .label(--accent) .price(--old/--sale) .btn(--sm/lg/block/secondary/ghost/light) .icon-btn .tap .card .product-card .badge .fav .stars .qty .ship-bar .data-tbd .accordion__item/__head/__body`. Accordion `@alpinejs/collapse` yüklü (`x-collapse`).
 
+## 4b. WAVE — Görselli+merkezi hero + form prefill (Faz 0 mini, DONUK)
+
+**A) `.page-hero` (görselli + merkezi page-header).** Mevcut `.page-header`'ı bununla DEĞİŞTİR (hero kapsamındaki sayfalarda). Tek pattern; sayfa kendi görsel+metnini verir. Metni KORU (sadece hizala+görselle). `urun.html` + auth sayfalarına EKLEME.
+
+```html
+<section class="page-hero" style="--hero-scrim:.64">
+  <div class="page-hero__bg" style="background-image:url('assets/img/banners/hero.webp')" aria-hidden="true"></div>
+  <div class="page-hero__scrim" aria-hidden="true"></div>
+  <div class="page-hero__content">
+    <nav class="breadcrumb" aria-label="breadcrumb"> … Ana Sayfa › <span class="current">Başlık</span> </nav>
+    <span class="page-hero__eyebrow">EYEBROW (ops.)</span>
+    <h1 class="page-hero__title">Sayfa Başlığı</h1>
+    <p class="page-hero__sub">Mevcut alt-başlık metni (korunur).</p>
+  </div>
+</section>
+```
+- Görsel: **mevcut `assets/img/`** görsellerini tematik kullan (`banners/hero.webp · promo-ses.jpg · trust-bg.jpg`, `products/p1..p12.jpg`, `tg-products/akilli-ampul.jpg`). Dış fetch YOK, başka marka YOK. `kategori.html` hero bg'si dinamik `cat.photo` olabilir (`:style`).
+- **AA ≥4.5**: scrim varsayılan `.64`. Parlak görselde per-sayfa knob: `style="--hero-scrim:.72"`. Eval'de 3 breakpoint AA doğrula.
+- Tüm hero'lar **aynı yükseklik/scrim/tipografi** — yalnız görsel+metin değişir.
+
+**B) Form prefill + validation timing.**
+- `window.tgDemo` — form INPUT demo değerleri (ad/soyad/email/emailNew/password/telefon/il/ilce/adres/cardName/cardNo/cardExp/cardCvv/firma/yetkili/adet/mesaj/seriNo/satinAlinanYer/satinAlmaTarihi/siparisNo). Form x-data başlangıç değerlerini bundan doldur. **Giriş** = `tgDemo.email`+`password` (kayıtlı demo kullanıcı → login çalışır). **Kayıt** = `tgDemo.emailNew` (henüz kayıtlı değil → "zaten kayıtlı" hatası vermez) + yasal onay `true`. **Ödeme** = adres + kart demo dolu + `captcha=true`.
+- `window.tgFormUX()` — validation timing mixin: `x-data="Object.assign(tgFormUX(), { ...form... })"`. input'ta `@blur="touch('email')"`; submit'te `touchAll([...])`; hata blokunda `x-show="showErr('email') && <kuralın bozuk>"`. **Hata açılışta GÖSTERİLMEZ** (yalnız blur/submit sonrası). Prefill dolu olduğundan açılış zaten temiz; kullanıcı temizlerse de bombardıman olmaz.
+- **DEĞİŞMEZ:** site'nin gerçek iletişim verisi (footer/header telefon/adres/e-posta = `.data-tbd`) prefill DEĞİL — placeholder kalır.
+
 ## 5. Kabul kriteri (her teammate, eval-iterate ≥2 tur)
 Replica/flat · 3 breakpoint (1440/768/390) · 0 console hatası · empty/edge state'ler · relative path · foundation'a yazılmadı · dil tonu anasayfayla tutarlı · favori/cart/auth store senkron · KDV-dahil + 750₺ copy.

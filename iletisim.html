@@ -23,21 +23,19 @@
   <div data-include="partials/header.html"></div>
 
   <main>
-    <!-- Breadcrumb -->
-    <div class="container-tg">
-      <nav class="breadcrumb" aria-label="Sayfa yolu">
-        <a href="index.html">Ana Sayfa</a>
-        <span class="sep">/</span>
-        <span class="current">İletişim</span>
-      </nav>
-    </div>
-
-    <!-- Page header -->
-    <section class="page-header">
-      <div class="container-tg page-header__inner">
-        <span class="label label--accent">Bize Ulaşın</span>
-        <h1 class="page-header__title mt-2">İletişim</h1>
-        <p class="page-header__sub">Soru, öneri ve talepleriniz için formu doldurun; ekibimiz en kısa sürede size dönüş yapsın.</p>
+    <!-- Visual + centered hero header -->
+    <section class="page-hero" style="--hero-scrim:.66">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/promo-ses.jpg')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
+        <nav class="breadcrumb" aria-label="Sayfa yolu">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">İletişim</span>
+        </nav>
+        <span class="page-hero__eyebrow">Bize Ulaşın</span>
+        <h1 class="page-hero__title">İletişim</h1>
+        <p class="page-hero__sub">Soru, öneri ve talepleriniz için formu doldurun; ekibimiz en kısa sürede size dönüş yapsın.</p>
       </div>
     </section>
 
@@ -45,7 +43,7 @@
       <div class="container-tg grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-start">
 
         <!-- Contact form -->
-        <div class="card p-6 md:p-8" x-data="iletisimForm()">
+        <div class="card p-6 md:p-8" x-data="Object.assign(tgFormUX(), iletisimForm())">
           <!-- Success state -->
           <div x-show="submitted" x-cloak class="empty-state">
             <div class="empty-state__icon" style="background:rgba(31,157,87,.12);color:var(--tg-success)">
@@ -62,13 +60,13 @@
             <div class="grid gap-x-4 sm:grid-cols-2">
               <label class="field">
                 <span class="field__label">Ad Soyad <span class="req">*</span></span>
-                <input type="text" class="field__input" x-model="f.ad" />
-                <span class="field__error" x-show="err.ad" x-text="err.ad" x-cloak></span>
+                <input type="text" class="field__input" x-model="f.ad" @blur="touch('ad')" />
+                <span class="field__error" x-show="showErr('ad') && !f.ad.trim()" x-cloak>Ad Soyad zorunludur.</span>
               </label>
               <label class="field">
                 <span class="field__label">E-posta <span class="req">*</span></span>
-                <input type="email" class="field__input" x-model="f.eposta" />
-                <span class="field__error" x-show="err.eposta" x-text="err.eposta" x-cloak></span>
+                <input type="email" class="field__input" x-model="f.eposta" @blur="touch('eposta')" />
+                <span class="field__error" x-show="showErr('eposta') && epostaErr" x-text="epostaErr" x-cloak></span>
               </label>
             </div>
             <label class="field">
@@ -77,16 +75,16 @@
             </label>
             <label class="field">
               <span class="field__label">Mesajınız <span class="req">*</span></span>
-              <textarea x-model="f.mesaj" placeholder="Bize iletmek istediğiniz konu..."></textarea>
-              <span class="field__error" x-show="err.mesaj" x-text="err.mesaj" x-cloak></span>
+              <textarea x-model="f.mesaj" @blur="touch('mesaj')" placeholder="Bize iletmek istediğiniz konu..."></textarea>
+              <span class="field__error" x-show="showErr('mesaj') && !f.mesaj.trim()" x-cloak>Mesaj alanı zorunludur.</span>
             </label>
 
             <!-- KVKK consent -->
-            <label class="consent" :class="err.kvkk && 'field--error'">
-              <input type="checkbox" x-model="f.kvkk" />
+            <label class="consent" :class="showErr('kvkk') && !f.kvkk && 'field--error'">
+              <input type="checkbox" x-model="f.kvkk" @change="touch('kvkk')" />
               <span><a href="kvkk.html" target="_blank">KVKK Aydınlatma Metni</a>'ni okudum ve kişisel verilerimin işlenmesini kabul ediyorum. <span class="req" style="color:var(--tg-error)">*</span></span>
             </label>
-            <span class="field__error" x-show="err.kvkk" x-text="err.kvkk" x-cloak style="margin-top:-6px;margin-bottom:12px"></span>
+            <span class="field__error" x-show="showErr('kvkk') && !f.kvkk" x-cloak style="margin-top:-6px;margin-bottom:12px">Devam etmek için KVKK metnini onaylayın.</span>
 
             <!-- reCAPTCHA placeholder -->
             <div class="recaptcha-ph mb-4">
@@ -160,19 +158,32 @@
 
   <script>
     function iletisimForm() {
+      var D = window.tgDemo || {};
+      var prefill = function () {
+        return {
+          ad: [D.ad, D.soyad].filter(Boolean).join(" "),
+          eposta: D.email || "",
+          telefon: D.telefon || "",
+          mesaj: D.mesaj || "",
+          kvkk: true,          // önceden onaylı — "Gönder" doğrudan çalışsın
+          captcha: true,
+        };
+      };
       return {
         submitted: false,
-        f: { ad: "", eposta: "", telefon: "", mesaj: "", kvkk: false, captcha: false },
-        err: {},
+        f: prefill(),
+        get epostaErr() {
+          var v = (this.f.eposta || "").trim();
+          if (!v) return "E-posta zorunludur.";
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return "Geçerli bir e-posta girin.";
+          return "";
+        },
+        invalid: function () {
+          return !this.f.ad.trim() || !!this.epostaErr || !this.f.mesaj.trim() || !this.f.kvkk;
+        },
         submit: function () {
-          var e = {};
-          if (!this.f.ad.trim()) e.ad = "Ad Soyad zorunludur.";
-          if (!this.f.eposta.trim()) e.eposta = "E-posta zorunludur.";
-          else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.f.eposta.trim())) e.eposta = "Geçerli bir e-posta girin.";
-          if (!this.f.mesaj.trim()) e.mesaj = "Mesaj alanı zorunludur.";
-          if (!this.f.kvkk) e.kvkk = "Devam etmek için KVKK metnini onaylayın.";
-          this.err = e;
-          if (Object.keys(e).length) {
+          this.touchAll(["ad", "eposta", "mesaj", "kvkk"]);
+          if (this.invalid()) {
             this.$store.toast.push("Lütfen formdaki eksik alanları kontrol edin.", "error");
             return;
           }
@@ -181,8 +192,8 @@
         },
         reset: function () {
           this.submitted = false;
-          this.f = { ad: "", eposta: "", telefon: "", mesaj: "", kvkk: false, captcha: false };
-          this.err = {};
+          this.f = prefill();
+          this.resetUX();
         },
       };
     }

@@ -394,6 +394,27 @@ button { font-family: inherit; cursor: pointer; }
 .page-header__title { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem); font-weight: 700; color: var(--tg-ink); }
 .page-header__sub { color: var(--tg-body); margin-top: 6px; max-width: 46rem; }
 
+/* ---- Visual + centered inner-page hero header (flat, homepage-hero dili) ----
+   Tek pattern; her sayfa kendi görselini (.page-hero__bg style) + metnini verir.
+   Tutarlı yükseklik/scrim/tipografi. Scrim düz koyu-teal (gradient YOK); parlak
+   görselde AA için per-sayfa knob: style="--hero-scrim:.72". Metin ortalı. */
+.page-hero { position: relative; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; background: #053b3f; min-height: 200px; }
+@media (min-width: 768px) { .page-hero { min-height: 240px; } }
+@media (min-width: 1440px) { .page-hero { min-height: 284px; } }
+.page-hero__bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.page-hero__scrim { position: absolute; inset: 0; background: rgba(4, 38, 41, var(--hero-scrim, .64)); }
+.page-hero__content { position: relative; z-index: 2; width: 100%; max-width: 62rem; margin-inline: auto; padding: 40px 20px; color: #fff; }
+@media (min-width: 768px) { .page-hero__content { padding: 52px 24px; } }
+.page-hero__eyebrow { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--tg-amber); margin-bottom: 10px; }
+.page-hero__title { color: #fff; font-weight: 700; line-height: 1.16; letter-spacing: -.01em; font-size: clamp(1.6rem, 1.2rem + 1.7vw, 2.4rem); text-shadow: 0 1px 6px rgba(0, 0, 0, .28); }
+.page-hero__sub { color: #e2f1f0; margin: 12px auto 0; max-width: 44rem; font-size: clamp(.95rem, .9rem + .25vw, 1.1rem); text-shadow: 0 1px 4px rgba(0, 0, 0, .24); }
+/* breadcrumb centered + light, readable on the dark hero */
+.page-hero .breadcrumb { justify-content: center; padding: 0 0 6px; color: rgba(255, 255, 255, .72); }
+.page-hero .breadcrumb a { color: rgba(255, 255, 255, .72); }
+.page-hero .breadcrumb a:hover { color: #fff; }
+.page-hero .breadcrumb .sep { color: rgba(255, 255, 255, .42); }
+.page-hero .breadcrumb .current { color: #fff; }
+
 /* ---- Toolbar (listing: count · sort · view toggle) -------------------- */
 .toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 0; }
 .toolbar__count { font-size: 14px; color: var(--tg-body); }

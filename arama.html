@@ -21,15 +21,21 @@
 
   <main x-data="tgSearchPage()" x-init="init()">
 
-    <div class="container-tg">
-      <nav class="breadcrumb" aria-label="Sayfa yolu">
-        <a href="index.html">Ana Sayfa</a>
-        <span class="sep">/</span>
-        <span class="current">Arama</span>
-      </nav>
-    </div>
+    <section class="page-hero" style="--hero-scrim:.64">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/hero.webp')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
+        <nav class="breadcrumb" aria-label="Sayfa yolu">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Arama</span>
+        </nav>
+        <h1 class="page-hero__title">Arama</h1>
+        <p class="page-hero__sub">Ürün, kategori veya marka adıyla TG Germany koleksiyonunda arayın.</p>
+      </div>
+    </section>
 
-    <section class="section" style="padding-top:8px">
+    <section class="section" style="padding-top:32px">
       <div class="container-tg">
 
         <!-- Search box -->
@@ -39,9 +45,9 @@
           <button type="submit" class="btn search-box__submit">Ara</button>
         </form>
 
-        <h1 class="t-h1 mb-1" x-show="q.trim()">
+        <h2 class="t-h2 mb-1" x-show="q.trim()">
           "<span x-text="q.trim()"></span>" için sonuçlar
-        </h1>
+        </h2>
         <p class="toolbar__count mb-6" x-show="q.trim()"><b x-text="results.length"></b> ürün bulundu</p>
 
         <!-- Results -->

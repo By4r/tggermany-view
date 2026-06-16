@@ -20,19 +20,19 @@
   <div data-include="partials/header.html"></div>
 
   <main x-data="tgTrack()">
-    <div class="page-header">
-      <div class="container-tg">
+    <section class="page-hero" style="--hero-scrim:.72">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/hero.webp')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
         <nav class="breadcrumb" aria-label="Konum">
           <a href="index.html">Ana Sayfa</a>
           <span class="sep">/</span>
           <span class="current">Sipariş Takip</span>
         </nav>
-        <div class="page-header__inner">
-          <h1 class="page-header__title">Sipariş Takip</h1>
-          <p class="page-header__sub">E-posta adresiniz ve sipariş numaranızla siparişinizin güncel durumunu görüntüleyin.</p>
-        </div>
+        <h1 class="page-hero__title">Sipariş Takip</h1>
+        <p class="page-hero__sub">E-posta adresiniz ve sipariş numaranızla siparişinizin güncel durumunu görüntüleyin.</p>
       </div>
-    </div>
+    </section>
 
     <section class="section">
       <div class="container-tg" style="max-width:520px">
@@ -46,15 +46,15 @@
         <form class="account-card" @submit.prevent="query()">
           <div class="field">
             <label class="field__label" for="tk-email">E-posta Adresi <span class="req">*</span></label>
-            <input id="tk-email" type="email" class="field__input" :class="errors.email && 'field--error'"
-                   x-model="email" placeholder="ornek@eposta.com" @input="errors.email=''" />
-            <span class="field__error" x-show="errors.email" x-text="errors.email" x-cloak></span>
+            <input id="tk-email" type="email" class="field__input" :class="showErr('email') && !emailValid() && 'field--error'"
+                   x-model="email" placeholder="ornek@eposta.com" @blur="touch('email')" />
+            <span class="field__error" x-show="showErr('email') && !emailValid()" x-cloak>Geçerli bir e-posta adresi girin.</span>
           </div>
           <div class="field">
             <label class="field__label" for="tk-id">Sipariş Numarası <span class="req">*</span></label>
-            <input id="tk-id" type="text" class="field__input" :class="errors.id && 'field--error'"
-                   x-model="orderId" placeholder="Örn. TG-DEMO-001" @input="errors.id=''" />
-            <span class="field__error" x-show="errors.id" x-text="errors.id" x-cloak></span>
+            <input id="tk-id" type="text" class="field__input" :class="showErr('id') && !idValid() && 'field--error'"
+                   x-model="orderId" placeholder="Örn. TG-DEMO-001" @blur="touch('id')" />
+            <span class="field__error" x-show="showErr('id') && !idValid()" x-cloak>Sipariş numarası gerekli.</span>
             <span class="field__hint">Sipariş numaranızı onay e-postasında bulabilirsiniz.</span>
           </div>
           <button type="submit" class="btn btn--block">Sorgula</button>
@@ -68,7 +68,7 @@
                 <span class="label">Sipariş No</span>
                 <p class="font-semibold text-ink" x-text="order.id"></p>
               </div>
-              <span class="status-badge" :class="badgeClass" x-text="order.status"></span>
+              <span class="status-badge" :class="badgeClass()" x-text="order.status"></span>
             </div>
 
             <!-- status steps -->
@@ -131,49 +131,51 @@
 
   <script>
     function tgTrack() {
-      return {
+      return Object.assign(tgFormUX(), {
         email: "",
         orderId: "",
-        errors: { email: "", id: "" },
         state: "idle",   // idle | found | notfound
         order: null,
         steps: ["Hazırlanıyor", "Kargoda", "Teslim Edildi"],
+        // Not: Object.assign getter'ları değer olarak kopyaladığından METOT kullanıyoruz.
+        emailValid() { return /^\S+@\S+\.\S+$/.test((this.email || "").trim()); },
+        idValid() { return !!(this.orderId || "").trim(); },
         init() {
-          // prefill from ?id= (e.g. coming from order confirmation)
-          var id = window.TG.parseQuery("id");
-          if (id) this.orderId = id;
-          if (this.$store.auth.loggedIn && this.$store.auth.user) this.email = this.$store.auth.user.email || "";
-        },
-        validate() {
-          this.errors = { email: "", id: "" };
-          var ok = true;
-          if (!/^\S+@\S+\.\S+$/.test(this.email.trim())) { this.errors.email = "Geçerli bir e-posta adresi girin."; ok = false; }
-          if (!this.orderId.trim()) { this.errors.id = "Sipariş numarası gerekli."; ok = false; }
-          return ok;
+          // Prefill: logged-in user's e-posta + seeded demo order no (TG-DEMO-001).
+          // ?id= (sipariş onayından gelen) önceliklidir.
+          var qId = window.TG.parseQuery("id");
+          if (this.$store.auth.loggedIn && this.$store.auth.user && this.$store.auth.user.email) {
+            this.email = this.$store.auth.user.email;
+          } else {
+            this.email = window.tgDemo.email;
+          }
+          this.orderId = qId || window.tgDemo.siparisNo;
         },
         query() {
-          if (!this.validate()) return;
+          this.touchAll(["email", "id"]);
+          if (!this.emailValid() || !this.idValid()) return;
           var o = this.$store.orders.find(this.email.trim(), this.orderId.trim());
           if (o) { this.order = o; this.state = "found"; }
           else { this.order = null; this.state = "notfound"; }
         },
-        get statusIndex() {
+        statusIndex() {
           if (!this.order) return 0;
           var i = this.steps.indexOf(this.order.status);
           return i === -1 ? 0 : i;
         },
-        get badgeClass() {
+        badgeClass() {
           var s = this.order && this.order.status;
           if (s === "Teslim Edildi") return "status-badge--done";
           if (s === "Kargoda") return "status-badge--ship";
           return "status-badge--prep";
         },
         stepClass(i) {
-          if (i < this.statusIndex) return "is-done";
-          if (i === this.statusIndex) return "is-current";
+          var idx = this.statusIndex();
+          if (i < idx) return "is-done";
+          if (i === idx) return "is-current";
           return "";
         },
-      };
+      });
     }
     window.tgTrack = tgTrack;
   </script>

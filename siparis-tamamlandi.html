@@ -20,6 +20,21 @@
   <div data-include="partials/header.html"></div>
 
   <main x-data="tgOrderDone()" x-init="init()">
+
+    <section class="page-hero" style="--hero-scrim:.64">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/hero.webp')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
+        <nav class="breadcrumb" aria-label="Sayfa yolu">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Sipariş Tamamlandı</span>
+        </nav>
+        <h1 class="page-hero__title">Siparişiniz Alındı</h1>
+        <p class="page-hero__sub">Siparişiniz başarıyla oluşturuldu. Özetinizi aşağıda görüntüleyebilirsiniz.</p>
+      </div>
+    </section>
+
     <section class="section">
       <div class="container-tg" style="max-width:760px">
 
@@ -30,8 +45,8 @@
             <div class="empty-state__icon" style="background:rgba(31,157,87,.14);color:var(--tg-success);width:72px;height:72px">
               <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
             </div>
-            <h1 class="t-h1 mt-4">Siparişiniz alındı</h1>
-            <p class="mt-2">Teşekkür ederiz. Siparişiniz başarıyla oluşturuldu; hazırlanmaya başladığında e-posta ile bilgilendirileceksiniz.</p>
+            <h2 class="t-h2 mt-4">Teşekkür ederiz</h2>
+            <p class="mt-2">Siparişiniz başarıyla oluşturuldu; hazırlanmaya başladığında e-posta ile bilgilendirileceksiniz.</p>
             <p class="mt-3 text-sm">Sipariş No: <b class="text-ink" x-text="order && order.id"></b></p>
           </div>
 

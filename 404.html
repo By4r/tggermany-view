@@ -20,15 +20,23 @@
   <div data-include="partials/header.html"></div>
 
   <main x-data="tg404()">
+    <section class="page-hero" style="--hero-scrim:.72">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/hero.webp')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
+        <nav class="breadcrumb" aria-label="Konum">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Sayfa Bulunamadı</span>
+        </nav>
+        <span class="page-hero__eyebrow">404</span>
+        <h1 class="page-hero__title">Aradığınız sayfayı bulamadık</h1>
+        <p class="page-hero__sub">Bağlantı taşınmış, değişmiş veya kaldırılmış olabilir. Aradığınız ürünü buradan arayabilir ya da ana kategorilerimize göz atabilirsiniz.</p>
+      </div>
+    </section>
+
     <section class="section">
       <div class="container-tg" style="max-width:640px;text-align:center">
-        <p class="label label--accent">404</p>
-        <h1 class="t-h1 mt-2">Aradığınız sayfayı bulamadık</h1>
-        <p class="mt-3" style="max-width:34rem;margin-inline:auto">
-          Bağlantı taşınmış, değişmiş veya kaldırılmış olabilir. Aradığınız ürünü buradan arayabilir
-          ya da ana kategorilerimize göz atabilirsiniz.
-        </p>
-
         <!-- Search -->
         <form class="search-box mt-7" @submit.prevent="go()" role="search" style="max-width:480px;margin-inline:auto">
           <svg class="search-box__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>

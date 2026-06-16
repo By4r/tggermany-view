@@ -20,7 +20,7 @@
   <div data-include="partials/header.html"></div>
 
   <main>
-    <section class="auth" x-data="tgRegister()">
+    <section class="auth" x-data="Object.assign(tgFormUX(), tgRegister())">
       <!-- Left: form -->
       <div class="auth__form">
         <div class="auth__card">
@@ -44,22 +44,22 @@
 
           <form @submit.prevent="submit()" novalidate>
             <div class="grid grid-cols-2 gap-3">
-              <div class="field" :class="errs.ad && 'field--error'">
+              <div class="field" :class="(showErr('ad') && errs.ad) && 'field--error'">
                 <label class="field__label" for="r-ad">Ad <span class="req">*</span></label>
-                <input id="r-ad" type="text" class="field__input" x-model="form.ad" autocomplete="given-name" />
-                <span class="field__error" x-show="errs.ad" x-text="errs.ad" x-cloak></span>
+                <input id="r-ad" type="text" class="field__input" x-model="form.ad" @blur="touch('ad'); validate()" autocomplete="given-name" />
+                <span class="field__error" x-show="showErr('ad') && errs.ad" x-text="errs.ad" x-cloak></span>
               </div>
-              <div class="field" :class="errs.soyad && 'field--error'">
+              <div class="field" :class="(showErr('soyad') && errs.soyad) && 'field--error'">
                 <label class="field__label" for="r-soyad">Soyad <span class="req">*</span></label>
-                <input id="r-soyad" type="text" class="field__input" x-model="form.soyad" autocomplete="family-name" />
-                <span class="field__error" x-show="errs.soyad" x-text="errs.soyad" x-cloak></span>
+                <input id="r-soyad" type="text" class="field__input" x-model="form.soyad" @blur="touch('soyad'); validate()" autocomplete="family-name" />
+                <span class="field__error" x-show="showErr('soyad') && errs.soyad" x-text="errs.soyad" x-cloak></span>
               </div>
             </div>
 
-            <div class="field" :class="errs.email && 'field--error'">
+            <div class="field" :class="(showErr('email') && errs.email) && 'field--error'">
               <label class="field__label" for="r-email">E-posta <span class="req">*</span></label>
-              <input id="r-email" type="email" class="field__input" x-model="form.email" autocomplete="email" placeholder="ornek@eposta.com" />
-              <span class="field__error" x-show="errs.email" x-text="errs.email" x-cloak></span>
+              <input id="r-email" type="email" class="field__input" x-model="form.email" @blur="touch('email'); validate()" autocomplete="email" placeholder="ornek@eposta.com" />
+              <span class="field__error" x-show="showErr('email') && errs.email" x-text="errs.email" x-cloak></span>
             </div>
 
             <div class="field">
@@ -68,19 +68,19 @@
               <span class="field__hint">İsteğe bağlı — sipariş bilgilendirmesi için kullanılır.</span>
             </div>
 
-            <div class="field" :class="errs.password && 'field--error'">
+            <div class="field" :class="(showErr('password') && errs.password) && 'field--error'">
               <label class="field__label" for="r-pwd">Şifre <span class="req">*</span></label>
-              <input id="r-pwd" type="password" class="field__input" x-model="form.password" autocomplete="new-password" placeholder="En az 6 karakter" />
-              <span class="field__error" x-show="errs.password" x-text="errs.password" x-cloak></span>
+              <input id="r-pwd" type="password" class="field__input" x-model="form.password" @blur="touch('password'); validate()" autocomplete="new-password" placeholder="En az 6 karakter" />
+              <span class="field__error" x-show="showErr('password') && errs.password" x-text="errs.password" x-cloak></span>
             </div>
 
-            <div class="consent" :class="errs.kvkk && 'text-error'">
-              <input id="r-kvkk" type="checkbox" x-model="form.kvkk" />
+            <div class="consent" :class="(showErr('kvkk') && errs.kvkk) && 'text-error'">
+              <input id="r-kvkk" type="checkbox" x-model="form.kvkk" @change="touch('kvkk'); validate()" />
               <label for="r-kvkk">
                 <a href="kvkk.html">KVKK Aydınlatma Metni</a> ve <a href="mesafeli-satis.html">üyelik koşullarını</a> okudum, onaylıyorum. <span class="req">*</span>
               </label>
             </div>
-            <span class="field__error" style="margin-top:-6px;margin-bottom:10px;display:block" x-show="errs.kvkk" x-text="errs.kvkk" x-cloak></span>
+            <span class="field__error" style="margin-top:-6px;margin-bottom:10px;display:block" x-show="showErr('kvkk') && errs.kvkk" x-text="errs.kvkk" x-cloak></span>
 
             <div class="consent">
               <input id="r-mkt" type="checkbox" x-model="form.marketingOptIn" />
@@ -133,7 +133,11 @@
   <script>
     function tgRegister() {
       return {
-        form: { ad: '', soyad: '', email: '', telefon: '', password: '', kvkk: false, marketingOptIn: false },
+        form: {
+          ad: window.tgDemo.ad, soyad: window.tgDemo.soyad,
+          email: window.tgDemo.emailNew, telefon: window.tgDemo.telefon,
+          password: window.tgDemo.password, kvkk: true, marketingOptIn: false,
+        },
         errs: {},
         nextQuery() {
           var n = window.TG.parseQuery('next');
@@ -158,6 +162,7 @@
           return Object.keys(e).length === 0;
         },
         submit() {
+          this.touchAll(['ad', 'soyad', 'email', 'password', 'kvkk']);
           if (!this.validate()) return;
           var r = this.$store.auth.register({
             ad: this.form.ad.trim(), soyad: this.form.soyad.trim(),

@@ -252,6 +252,7 @@ document.addEventListener("alpine:init", function () {
     loggedIn: false,
     user: null,
     init() {
+      tgEnsureDemoUser();   // giriş prefill'i (tgDemo.email/password) hep çalışsın diye kayıtlı demo kullanıcı
       var a = tgLoad("tg_auth", null);
       if (a && a.loggedIn) { this.loggedIn = true; this.user = tgLoad("tg_user", null); }
     },
@@ -475,3 +476,51 @@ window.tgHeader = tgHeader;
 /* ---- global toast host (her sayfada body sonunda x-teleport) ----------- */
 function tgToastHost() { return {}; }
 window.tgToastHost = tgToastHost;
+
+/* ===== Wave: form prefill + validation timing ==========================
+   ÖNEMLİ: tgDemo yalnızca FORM INPUT demo değerleridir (kullanıcının gireceği
+   örnek veriler). Site'nin GERÇEK iletişim verisi (footer/header telefon/adres/
+   e-posta = .data-tbd) BUNUNLA DEĞİŞMEZ; o placeholder kalır. */
+window.tgDemo = {
+  // kimlik / iletişim (kullanıcının kendi gireceği örnek)
+  ad: "Yasin", soyad: "Demir",
+  email: "demo@tgkullanici.com",        // giriş için — kayıtlı demo kullanıcı (tgEnsureDemoUser)
+  emailNew: "yeni.uye@tgkullanici.com", // KAYIT için — henüz kayıtlı olmayan, "zaten kayıtlı" hatası vermez
+  password: "demo1234",
+  telefon: "532 000 00 00",
+  // adres
+  il: "İstanbul", ilce: "Kadıköy", adres: "Örnek Mah. Demo Cad. No:12 D:4", adresBaslik: "Ev",
+  // kart (mock — gerçek PSP yok)
+  cardName: "YASIN DEMIR", cardNo: "4242 4242 4242 4242", cardExp: "12/28", cardCvv: "123",
+  // kurumsal / form metinleri
+  firma: "Demo Teknoloji A.Ş.", yetkili: "Yasin Demir", adet: "250",
+  mesaj: "Ürünleriniz ve kurumsal iş birliği hakkında bilgi almak istiyorum.",
+  // ek garanti / sipariş takip
+  seriNo: "TG-FN-201-000123", satinAlinanYer: "TG Germany Online",
+  satinAlmaTarihi: "2026-05-01", siparisNo: "TG-DEMO-001",
+};
+
+/* Kayıtlı demo kullanıcı (idempotent) — giriş prefill'i hep çalışsın. */
+function tgEnsureDemoUser() {
+  var users = tgLoad("tg_users", []);
+  if (!users.some(function (u) { return (u.email || "").toLowerCase() === window.tgDemo.email; })) {
+    users.push({ ad: window.tgDemo.ad, soyad: window.tgDemo.soyad, email: window.tgDemo.email, telefon: window.tgDemo.telefon, password: window.tgDemo.password, verified: true });
+    tgSave("tg_users", users);
+  }
+}
+window.tgEnsureDemoUser = tgEnsureDemoUser;
+
+/* Validation timing mixin — hata yalnız blur(touch) veya submit'ten SONRA görünür.
+   Kullanım: x-data="Object.assign(tgFormUX(), { ...kendi form state... })"
+   input'ta @blur="touch('email')"; hata blokunda x-show="showErr('email') && !valid('email')". */
+function tgFormUX() {
+  return {
+    touched: {},
+    submitted: false,
+    touch(field) { this.touched[field] = true; },
+    touchAll(fields) { var t = this; (fields || []).forEach(function (f) { t.touched[f] = true; }); this.submitted = true; },
+    showErr(field) { return this.submitted || !!this.touched[field]; },
+    resetUX() { this.touched = {}; this.submitted = false; },
+  };
+}
+window.tgFormUX = tgFormUX;

@@ -20,19 +20,19 @@
   <div data-include="partials/header.html"></div>
 
   <main x-data="tgWarranty()">
-    <div class="page-header">
-      <div class="container-tg">
+    <section class="page-hero" style="--hero-scrim:.72">
+      <div class="page-hero__bg" style="background-image:url('assets/img/banners/hero.webp')" aria-hidden="true"></div>
+      <div class="page-hero__scrim" aria-hidden="true"></div>
+      <div class="page-hero__content">
         <nav class="breadcrumb" aria-label="Konum">
           <a href="index.html">Ana Sayfa</a>
           <span class="sep">/</span>
           <span class="current">Ek Garanti</span>
         </nav>
-        <div class="page-header__inner">
-          <h1 class="page-header__title">Ek Garanti</h1>
-          <p class="page-header__sub">Satın aldığınız TG Germany ürününü kaydederek koruma süresini uzatın. Mevcut başvurunuzun durumunu da buradan sorgulayabilirsiniz.</p>
-        </div>
+        <h1 class="page-hero__title">Ek Garanti</h1>
+        <p class="page-hero__sub">Satın aldığınız TG Germany ürününü kaydederek koruma süresini uzatın. Mevcut başvurunuzun durumunu da buradan sorgulayabilirsiniz.</p>
       </div>
-    </div>
+    </section>
 
     <section class="section">
       <div class="container-tg" style="max-width:680px">
@@ -64,37 +64,37 @@
             <div class="grid sm:grid-cols-2 gap-x-4">
               <div class="field">
                 <label class="field__label" for="g-ad">Ad <span class="req">*</span></label>
-                <input id="g-ad" type="text" class="field__input" :class="err.ad && 'field--error'" x-model="f.ad" @input="err.ad=''" />
-                <span class="field__error" x-show="err.ad" x-text="err.ad" x-cloak></span>
+                <input id="g-ad" type="text" class="field__input" :class="showErr('ad') && invalid('ad') && 'field--error'" x-model="f.ad" @blur="touch('ad')" />
+                <span class="field__error" x-show="showErr('ad') && invalid('ad')" x-cloak>Ad gerekli.</span>
               </div>
               <div class="field">
                 <label class="field__label" for="g-soyad">Soyad <span class="req">*</span></label>
-                <input id="g-soyad" type="text" class="field__input" :class="err.soyad && 'field--error'" x-model="f.soyad" @input="err.soyad=''" />
-                <span class="field__error" x-show="err.soyad" x-text="err.soyad" x-cloak></span>
+                <input id="g-soyad" type="text" class="field__input" :class="showErr('soyad') && invalid('soyad') && 'field--error'" x-model="f.soyad" @blur="touch('soyad')" />
+                <span class="field__error" x-show="showErr('soyad') && invalid('soyad')" x-cloak>Soyad gerekli.</span>
               </div>
               <div class="field">
                 <label class="field__label" for="g-email">E-posta <span class="req">*</span></label>
-                <input id="g-email" type="email" class="field__input" :class="err.email && 'field--error'" x-model="f.email" @input="err.email=''" />
-                <span class="field__error" x-show="err.email" x-text="err.email" x-cloak></span>
+                <input id="g-email" type="email" class="field__input" :class="showErr('email') && invalid('email') && 'field--error'" x-model="f.email" @blur="touch('email')" />
+                <span class="field__error" x-show="showErr('email') && invalid('email')" x-cloak>Geçerli bir e-posta girin.</span>
               </div>
               <div class="field">
                 <label class="field__label" for="g-tel">Telefon <span class="req">*</span></label>
-                <input id="g-tel" type="tel" class="field__input" :class="err.telefon && 'field--error'" x-model="f.telefon" placeholder="05XX XXX XX XX" @input="err.telefon=''" />
-                <span class="field__error" x-show="err.telefon" x-text="err.telefon" x-cloak></span>
+                <input id="g-tel" type="tel" class="field__input" :class="showErr('telefon') && invalid('telefon') && 'field--error'" x-model="f.telefon" placeholder="05XX XXX XX XX" @blur="touch('telefon')" />
+                <span class="field__error" x-show="showErr('telefon') && invalid('telefon')" x-cloak>Telefon gerekli.</span>
               </div>
             </div>
 
             <div class="field">
               <label class="field__label" for="g-seri">Ürün Seri No <span class="req">*</span></label>
-              <input id="g-seri" type="text" class="field__input" :class="err.urunSeriNo && 'field--error'" x-model="f.urunSeriNo" placeholder="Örn. TG-AUD-01-XXXXXX" @input="err.urunSeriNo=''" />
-              <span class="field__error" x-show="err.urunSeriNo" x-text="err.urunSeriNo" x-cloak></span>
+              <input id="g-seri" type="text" class="field__input" :class="showErr('urunSeriNo') && invalid('urunSeriNo') && 'field--error'" x-model="f.urunSeriNo" placeholder="Örn. TG-AUD-01-XXXXXX" @blur="touch('urunSeriNo')" />
+              <span class="field__error" x-show="showErr('urunSeriNo') && invalid('urunSeriNo')" x-cloak>Ürün seri no gerekli.</span>
               <span class="field__hint">Seri numarasını ürün kutusunun üzerinde veya cihaz etiketinde bulabilirsiniz.</span>
             </div>
 
             <div class="grid sm:grid-cols-2 gap-x-4">
               <div class="field">
                 <label class="field__label" for="g-yer">Satın Alınan Yer <span class="req">*</span></label>
-                <select id="g-yer" :class="err.satinAlinanYer && 'field--error'" x-model="f.satinAlinanYer" @change="err.satinAlinanYer=''">
+                <select id="g-yer" :class="showErr('satinAlinanYer') && invalid('satinAlinanYer') && 'field--error'" x-model="f.satinAlinanYer" @blur="touch('satinAlinanYer')" @change="touch('satinAlinanYer')">
                   <option value="">Seçiniz</option>
                   <option>TG Germany Online Mağaza</option>
                   <option>Yetkili Bayi</option>
@@ -102,18 +102,18 @@
                   <option>Pazaryeri Platformu</option>
                   <option>Diğer</option>
                 </select>
-                <span class="field__error" x-show="err.satinAlinanYer" x-text="err.satinAlinanYer" x-cloak></span>
+                <span class="field__error" x-show="showErr('satinAlinanYer') && invalid('satinAlinanYer')" x-cloak>Satın alınan yeri seçin.</span>
               </div>
               <div class="field">
                 <label class="field__label" for="g-tarih">Satın Alma Tarihi <span class="req">*</span></label>
-                <input id="g-tarih" type="date" class="field__input" :class="err.tarih && 'field--error'" x-model="f.tarih" @input="err.tarih=''" />
-                <span class="field__error" x-show="err.tarih" x-text="err.tarih" x-cloak></span>
+                <input id="g-tarih" type="date" class="field__input" :class="showErr('tarih') && invalid('tarih') && 'field--error'" x-model="f.tarih" @blur="touch('tarih')" />
+                <span class="field__error" x-show="showErr('tarih') && invalid('tarih')" x-cloak>Satın alma tarihi gerekli.</span>
               </div>
             </div>
 
-            <!-- Fatura upload -->
+            <!-- Fatura upload (isteğe bağlı) -->
             <div class="field">
-              <label class="field__label">Fatura Görseli <span class="req">*</span></label>
+              <label class="field__label">Fatura Görseli</label>
               <div class="file-upload">
                 <label class="btn btn--secondary btn--sm" style="cursor:pointer">
                   Dosya Seç
@@ -121,16 +121,16 @@
                 </label>
                 <span class="file-upload__name" x-text="f.faturaAdi || 'Dosya seçilmedi'"></span>
               </div>
-              <span class="field__hint">Kabul edilen formatlar: JPG, PNG, PDF.</span>
+              <span class="field__hint">Kabul edilen formatlar: JPG, PNG, PDF. (İsteğe bağlı)</span>
               <span class="field__error" x-show="err.fatura" x-text="err.fatura" x-cloak></span>
             </div>
 
             <!-- Consents -->
             <label class="consent">
-              <input type="checkbox" x-model="f.kvkk" @change="err.kvkk=''" />
+              <input type="checkbox" x-model="f.kvkk" @change="touch('kvkk')" />
               <span><a href="aydinlatma.html">Aydınlatma Metni</a>’ni okudum ve kişisel verilerimin işlenmesini kabul ediyorum. <span class="req">*</span></span>
             </label>
-            <span class="field__error" style="margin:-6px 0 12px" x-show="err.kvkk" x-text="err.kvkk" x-cloak></span>
+            <span class="field__error" style="margin:-6px 0 12px" x-show="showErr('kvkk') && invalid('kvkk')" x-cloak>Devam etmek için Aydınlatma Metni’ni onaylayın.</span>
 
             <label class="consent">
               <input type="checkbox" x-model="f.pazarlama" />
@@ -139,10 +139,10 @@
 
             <!-- reCAPTCHA placeholder -->
             <div class="recaptcha-ph mt-2 mb-5">
-              <input type="checkbox" x-model="f.recaptcha" @change="err.recaptcha=''" aria-label="Robot değilim" />
+              <input type="checkbox" x-model="f.recaptcha" @change="touch('recaptcha')" aria-label="Robot değilim" />
               <span>Robot değilim</span>
             </div>
-            <span class="field__error" style="margin:-12px 0 12px;display:block" x-show="err.recaptcha" x-text="err.recaptcha" x-cloak></span>
+            <span class="field__error" style="margin:-12px 0 12px;display:block" x-show="showErr('recaptcha') && invalid('recaptcha')" x-cloak>Lütfen robot olmadığınızı doğrulayın.</span>
 
             <button type="submit" class="btn btn--block">Başvuruyu Tamamla</button>
             <p class="text-xs text-muted mt-3">* Ek garanti kapsamı, başvuru onayına ve ürün kategorisine göre değişebilir.</p>
@@ -213,10 +213,22 @@
       var blank = function () {
         return { ad: "", soyad: "", email: "", telefon: "", urunSeriNo: "", satinAlinanYer: "", tarih: "", faturaAdi: "", kvkk: false, pazarlama: false, recaptcha: false };
       };
-      return {
+      // Demo prefill: form açılışta dolu gelir → "Başvuruyu Tamamla" yazmadan çalışır.
+      var prefilled = function () {
+        var d = window.tgDemo;
+        return {
+          ad: d.ad, soyad: d.soyad, email: d.email, telefon: d.telefon,
+          urunSeriNo: d.seriNo,
+          satinAlinanYer: "TG Germany Online Mağaza",
+          tarih: d.satinAlmaTarihi,
+          faturaAdi: "",           // dosya yükleme opsiyonel — submit yine de başarılı
+          kvkk: true, pazarlama: false, recaptcha: true,
+        };
+      };
+      return Object.assign(tgFormUX(), {
         mode: "kayit",
         registered: false,
-        f: blank(),
+        f: prefilled(),
         err: {},
         qRef: "",
         qErr: "",
@@ -238,20 +250,28 @@
           }
           this.f.faturaAdi = file.name;
         },
+        // Alan bazlı geçerlilik — blur/submit sonrası gösterilir (tgFormUX gating).
+        invalid(field) {
+          var f = this.f;
+          switch (field) {
+            case "ad": return !f.ad.trim();
+            case "soyad": return !f.soyad.trim();
+            case "email": return !/^\S+@\S+\.\S+$/.test(f.email.trim());
+            case "telefon": return !f.telefon.trim();
+            case "urunSeriNo": return !f.urunSeriNo.trim();
+            case "satinAlinanYer": return !f.satinAlinanYer;
+            case "tarih": return !f.tarih;
+            case "kvkk": return !f.kvkk;
+            case "recaptcha": return !f.recaptcha;
+            default: return false;
+          }
+        },
         submitRegister() {
-          var e = {};
-          if (!this.f.ad.trim()) e.ad = "Ad gerekli.";
-          if (!this.f.soyad.trim()) e.soyad = "Soyad gerekli.";
-          if (!/^\S+@\S+\.\S+$/.test(this.f.email.trim())) e.email = "Geçerli bir e-posta girin.";
-          if (!this.f.telefon.trim()) e.telefon = "Telefon gerekli.";
-          if (!this.f.urunSeriNo.trim()) e.urunSeriNo = "Ürün seri no gerekli.";
-          if (!this.f.satinAlinanYer) e.satinAlinanYer = "Satın alınan yeri seçin.";
-          if (!this.f.tarih) e.tarih = "Satın alma tarihi gerekli.";
-          if (!this.f.faturaAdi) e.fatura = "Fatura görseli yükleyin.";
-          if (!this.f.kvkk) e.kvkk = "Devam etmek için Aydınlatma Metni’ni onaylayın.";
-          if (!this.f.recaptcha) e.recaptcha = "Lütfen robot olmadığınızı doğrulayın.";
-          this.err = e;
-          if (Object.keys(e).length) return;
+          // Fatura görseli opsiyonel — submit yine de başarılı olur.
+          this.touchAll(["ad", "soyad", "email", "telefon", "urunSeriNo", "satinAlinanYer", "tarih", "kvkk", "recaptcha"]);
+          var fields = ["ad", "soyad", "email", "telefon", "urunSeriNo", "satinAlinanYer", "tarih", "kvkk", "recaptcha"];
+          var t = this;
+          if (fields.some(function (k) { return t.invalid(k); })) return;
 
           if (this.$store.auth.loggedIn) {
             this.$store.warranties.add({
@@ -267,6 +287,7 @@
         resetForm() {
           this.f = blank();
           this.err = {};
+          this.resetUX();
           this.registered = false;
         },
         submitQuery() {
@@ -279,7 +300,7 @@
           if (found) { this.qResult = found; this.qState = "found"; }
           else { this.qResult = null; this.qState = "notfound"; }
         },
-      };
+      });
     }
     window.tgWarranty = tgWarranty;
   </script>
