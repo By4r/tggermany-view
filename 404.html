@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sayfa Bulunamadı — TG Germany</title>
+  <meta name="description" content="Aradığınız sayfa bulunamadı. Ürün arayın veya ana kategorilere göz atın." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main x-data="tg404()">
+    <section class="section">
+      <div class="container-tg" style="max-width:640px;text-align:center">
+        <p class="label label--accent">404</p>
+        <h1 class="t-h1 mt-2">Aradığınız sayfayı bulamadık</h1>
+        <p class="mt-3" style="max-width:34rem;margin-inline:auto">
+          Bağlantı taşınmış, değişmiş veya kaldırılmış olabilir. Aradığınız ürünü buradan arayabilir
+          ya da ana kategorilerimize göz atabilirsiniz.
+        </p>
+
+        <!-- Search -->
+        <form class="search-box mt-7" @submit.prevent="go()" role="search" style="max-width:480px;margin-inline:auto">
+          <svg class="search-box__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" x-model="q" placeholder="Ürün, kategori veya marka ara" aria-label="Ara" autocomplete="off" />
+          <button type="submit" class="btn search-box__submit">Ara</button>
+        </form>
+
+        <!-- Pillars -->
+        <div class="mt-9">
+          <p class="label mb-3">Kategorilere göz atın</p>
+          <div class="flex flex-wrap justify-center gap-3" x-data>
+            <template x-for="c in window.TG.categories" :key="c.slug">
+              <a :href="'kategori.html#'+c.slug" class="chip" style="height:38px;padding:0 16px;font-size:14px" x-text="c.name"></a>
+            </template>
+          </div>
+        </div>
+
+        <a href="index.html" class="btn btn--lg mt-9">Anasayfaya Dön</a>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    function tg404() {
+      return {
+        q: "",
+        go() {
+          var q = (this.q || "").trim();
+          if (q) location.href = "arama.html?q=" + encodeURIComponent(q);
+        },
+      };
+    }
+    window.tg404 = tg404;
+  </script>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

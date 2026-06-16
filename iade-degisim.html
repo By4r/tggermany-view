@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>İade &amp; Değişim — TG Germany</title>
+  <meta name="description" content="TG Germany iade ve değişim koşulları: 14 gün cayma hakkı, iade süreci, değişim ve ücret iadesi hakkında bilgi sayfası." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main>
+    <div class="page-header">
+      <div class="container-tg">
+        <nav class="breadcrumb" aria-label="Konum">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">İade &amp; Değişim</span>
+        </nav>
+        <div class="page-header__inner">
+          <h1 class="page-header__title">İade &amp; Değişim</h1>
+          <p class="page-header__sub">İade ve değişim koşulları, süreçleri ve ücret iadesi hakkında bilmeniz gerekenler.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container-tg" style="max-width:860px">
+        <article class="legal">
+          <h2>14 Gün İade Hakkı</h2>
+          <p>Teslim tarihinden itibaren <b>14 gün</b> içinde, herhangi bir gerekçe göstermeksizin ürününüzü iade edebilirsiniz. İade edilecek ürünün kullanılmamış, yeniden satılabilir durumda ve orijinal ambalajıyla birlikte olması gerekir.</p>
+
+          <h2>İade Koşulları</h2>
+          <ul>
+            <li>Ürün kullanılmamış ve hasarsız olmalıdır.</li>
+            <li>Orijinal ambalaj, etiket ve varsa hediye ürünler eksiksiz olmalıdır.</li>
+            <li>Faturanın iade edilecek ürünle birlikte gönderilmesi gerekir.</li>
+            <li>Hijyen gerektiren ürünlerde ambalaj açıldığında iade kabul edilmeyebilir.</li>
+          </ul>
+
+          <h2>İade Süreci</h2>
+          <p>İade talebinizi iki şekilde başlatabilirsiniz:</p>
+          <ul>
+            <li><b>Hesabınız varsa:</b> Hesabım &gt; Siparişlerim üzerinden ilgili siparişin detayına girip “İade Oluştur” adımını izleyin.</li>
+            <li><b>Misafir alışverişinde:</b> <a href="iletisim.html">İletişim</a> sayfamızdaki kanallar üzerinden talebinizi iletin.</li>
+          </ul>
+          <p>Talebiniz onaylandığında, ürünü anlaşmalı kargo ile tarafımıza göndermeniz için bilgilendirme yapılır.</p>
+
+          <h2>Ücret İadesi</h2>
+          <p>İade edilen ürün tarafımıza ulaşıp kontrolü tamamlandıktan sonra, ödeme tutarı ödeme yaptığınız karta veya hesaba iade edilir. İade tutarının kartınıza yansıma süresi, bankanıza göre değişebilir.</p>
+
+          <h2>Değişim</h2>
+          <p>Stok durumuna göre renk veya model değişimi yapılabilir. Değişim talepleriniz için de aynı süre ve koşullar geçerlidir. Değişim sürecini başlatmak için <a href="iletisim.html">İletişim</a> sayfamızdan bize ulaşabilirsiniz.</p>
+
+          <h2>Hasarlı veya Hatalı Ürün</h2>
+          <p>Ürün size hasarlı, hatalı veya eksik ulaştıysa kargo ve iade masrafları tarafımıza aittir. Bu durumda lütfen teslim aldıktan sonra en kısa sürede bizimle iletişime geçin.</p>
+
+          <h2>İlgili Sayfalar</h2>
+          <p>Cayma hakkına ilişkin yasal çerçeve için <a href="mesafeli-satis.html">Uzak Mesafeli Satış Sözleşmesi</a>, sık sorulan sorular için <a href="sss.html">SSS</a> sayfasını inceleyebilirsiniz.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

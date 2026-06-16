@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ödeme — TG Germany</title>
+  <meta name="description" content="Güvenli ödeme adımları: hesap, teslimat adresi, kargo ve ödeme bilgileri." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main x-data="tgCheckout()" x-init="init()">
+
+    <div class="container-tg">
+      <nav class="breadcrumb" aria-label="Sayfa yolu">
+        <a href="index.html">Ana Sayfa</a>
+        <span class="sep">/</span>
+        <a href="sepet.html">Sepetim</a>
+        <span class="sep">/</span>
+        <span class="current">Ödeme</span>
+      </nav>
+    </div>
+
+    <section class="section" style="padding-top:8px" x-show="$store.cart.count > 0" x-cloak>
+      <div class="container-tg">
+        <h1 class="t-h1 mb-6">Ödeme</h1>
+
+        <!-- Stepper -->
+        <div class="stepper" aria-hidden="true">
+          <template x-for="(s, i) in steps" :key="i">
+            <div class="contents">
+              <div class="stepper__step" :class="{ 'is-active': step === i+1, 'is-done': step > i+1 }">
+                <span class="stepper__num" x-text="step > i+1 ? '✓' : (i+1)"></span>
+                <span class="hidden sm:inline" x-text="s"></span>
+              </div>
+              <span class="stepper__line" x-show="i < steps.length - 1"></span>
+            </div>
+          </template>
+        </div>
+
+        <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
+
+          <!-- Wizard panels -->
+          <div class="account-card" style="padding:24px">
+
+            <!-- STEP 1: Hesap -->
+            <div x-show="step === 1">
+              <h2 class="font-semibold text-ink text-lg mb-1">Hesap</h2>
+              <template x-if="$store.auth.loggedIn">
+                <div>
+                  <p class="text-sm text-body mb-4">
+                    <span x-text="$store.auth.fullName"></span> olarak giriş yaptınız.
+                  </p>
+                  <button type="button" class="btn" @click="next()">Devam Et</button>
+                </div>
+              </template>
+              <template x-if="!$store.auth.loggedIn">
+                <div>
+                  <p class="text-sm text-body mb-5">Siparişinizi tamamlamak için giriş yapın veya misafir olarak devam edin.</p>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <a :href="'giris.html?next=' + encodeURIComponent('odeme.html')" class="btn btn--secondary">Giriş Yap</a>
+                    <a href="kayit.html" class="btn btn--secondary">Kayıt Ol</a>
+                  </div>
+                  <div class="auth__divider">veya</div>
+                  <div class="field">
+                    <label class="field__label" for="guestEmail">E-posta adresi <span class="req">*</span></label>
+                    <input id="guestEmail" type="email" class="field__input" x-model="email" placeholder="ornek@eposta.com" :class="err.email && 'border-error'" />
+                    <span class="field__error" x-show="err.email" x-text="err.email"></span>
+                    <span class="field__hint">Sipariş onayı bu adrese gönderilir.</span>
+                  </div>
+                  <button type="button" class="btn" @click="guestContinue()">Misafir Olarak Devam Et</button>
+                </div>
+              </template>
+            </div>
+
+            <!-- STEP 2: Adres -->
+            <div x-show="step === 2" x-cloak>
+              <h2 class="font-semibold text-ink text-lg mb-4">Teslimat Adresi</h2>
+
+              <!-- saved addresses -->
+              <div class="flex flex-col gap-3 mb-5" x-show="$store.addresses.list.length">
+                <template x-for="a in $store.addresses.list" :key="a.id">
+                  <label class="account-card flex gap-3 items-start cursor-pointer" :class="useAddrId===a.id && 'border-primary'" style="padding:14px">
+                    <input type="radio" name="addr" class="mt-1" style="accent-color:var(--tg-primary)" :checked="useAddrId===a.id" @change="useAddrId=a.id" />
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2">
+                        <span class="font-medium text-ink" x-text="a.baslik"></span>
+                        <span class="demo-tag" x-show="a.demo">Demo verisi</span>
+                      </div>
+                      <p class="text-sm text-body mt-0.5" x-text="a.ad + ' ' + a.soyad"></p>
+                      <p class="text-sm text-muted" x-text="a.adres + ' · ' + a.ilce + '/' + a.il"></p>
+                    </div>
+                  </label>
+                </template>
+                <button type="button" class="text-sm text-primary-700 font-medium text-left" @click="useAddrId='new'">+ Yeni adres ekle</button>
+              </div>
+
+              <!-- new address form -->
+              <div x-show="useAddrId==='new' || !$store.addresses.list.length">
+                <div class="grid sm:grid-cols-2 gap-x-4">
+                  <div class="field">
+                    <label class="field__label" for="adAd">Ad <span class="req">*</span></label>
+                    <input id="adAd" class="field__input" x-model="addr.ad" :class="err.ad && 'border-error'" />
+                    <span class="field__error" x-show="err.ad" x-text="err.ad"></span>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="adSoyad">Soyad <span class="req">*</span></label>
+                    <input id="adSoyad" class="field__input" x-model="addr.soyad" :class="err.soyad && 'border-error'" />
+                    <span class="field__error" x-show="err.soyad" x-text="err.soyad"></span>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="adTel">Telefon <span class="req">*</span></label>
+                    <input id="adTel" type="tel" class="field__input" x-model="addr.telefon" :class="err.telefon && 'border-error'" placeholder="5xx xxx xx xx" />
+                    <span class="field__error" x-show="err.telefon" x-text="err.telefon"></span>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="adIl">İl <span class="req">*</span></label>
+                    <input id="adIl" class="field__input" x-model="addr.il" :class="err.il && 'border-error'" />
+                    <span class="field__error" x-show="err.il" x-text="err.il"></span>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="adIlce">İlçe <span class="req">*</span></label>
+                    <input id="adIlce" class="field__input" x-model="addr.ilce" :class="err.ilce && 'border-error'" />
+                    <span class="field__error" x-show="err.ilce" x-text="err.ilce"></span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="field__label" for="adAdres">Açık adres <span class="req">*</span></label>
+                  <textarea id="adAdres" x-model="addr.adres" :class="err.adres && 'border-error'" placeholder="Mahalle, sokak, bina ve daire no"></textarea>
+                  <span class="field__error" x-show="err.adres" x-text="err.adres"></span>
+                </div>
+                <label class="consent" x-show="$store.auth.loggedIn">
+                  <input type="checkbox" x-model="saveAddr" />
+                  <span>Bu adresi hesabıma kaydet</span>
+                </label>
+              </div>
+
+              <div class="flex justify-between mt-2">
+                <button type="button" class="btn btn--secondary" @click="prev()">Geri</button>
+                <button type="button" class="btn" @click="submitAddress()">Devam Et</button>
+              </div>
+            </div>
+
+            <!-- STEP 3: Kargo -->
+            <div x-show="step === 3" x-cloak>
+              <h2 class="font-semibold text-ink text-lg mb-4">Kargo Yöntemi</h2>
+              <div class="flex flex-col gap-3">
+                <template x-for="m in shipMethods" :key="m.id">
+                  <label class="account-card flex items-center gap-3 cursor-pointer" :class="shipMethod===m.id && 'border-primary'" style="padding:14px">
+                    <input type="radio" name="ship" style="accent-color:var(--tg-primary)" :checked="shipMethod===m.id" @change="shipMethod=m.id" />
+                    <div class="flex-1">
+                      <span class="font-medium text-ink" x-text="m.name"></span>
+                      <p class="text-sm text-muted" x-text="m.eta"></p>
+                    </div>
+                    <span class="price text-sm" x-text="m.fee === 0 ? 'Ücretsiz' : fmt(m.fee)"></span>
+                  </label>
+                </template>
+              </div>
+              <p class="kdv-note mt-3" x-show="$store.cart.subtotal >= $store.cart.freeShip">750 ₺ üzeri siparişinizde standart kargo ücretsizdir.</p>
+              <div class="flex justify-between mt-5">
+                <button type="button" class="btn btn--secondary" @click="prev()">Geri</button>
+                <button type="button" class="btn" @click="next()">Devam Et</button>
+              </div>
+            </div>
+
+            <!-- STEP 4: Ödeme -->
+            <div x-show="step === 4" x-cloak>
+              <h2 class="font-semibold text-ink text-lg mb-4">Ödeme Bilgileri</h2>
+              <div class="flex items-center gap-2 mb-4 text-xs text-muted">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                Bilgileriniz 256-bit SSL ile korunur.
+              </div>
+              <div class="field">
+                <label class="field__label" for="cardName">Kart Üzerindeki İsim <span class="req">*</span></label>
+                <input id="cardName" class="field__input" x-model="card.name" :class="err.cardName && 'border-error'" />
+                <span class="field__error" x-show="err.cardName" x-text="err.cardName"></span>
+              </div>
+              <div class="field">
+                <label class="field__label" for="cardNo">Kart Numarası <span class="req">*</span></label>
+                <input id="cardNo" class="field__input" inputmode="numeric" x-model="card.no" placeholder="0000 0000 0000 0000" :class="err.cardNo && 'border-error'" />
+                <span class="field__error" x-show="err.cardNo" x-text="err.cardNo"></span>
+              </div>
+              <div class="grid grid-cols-2 gap-x-4">
+                <div class="field">
+                  <label class="field__label" for="cardExp">Son Kullanma <span class="req">*</span></label>
+                  <input id="cardExp" class="field__input" x-model="card.exp" placeholder="AA/YY" :class="err.cardExp && 'border-error'" />
+                  <span class="field__error" x-show="err.cardExp" x-text="err.cardExp"></span>
+                </div>
+                <div class="field">
+                  <label class="field__label" for="cardCvv">CVV <span class="req">*</span></label>
+                  <input id="cardCvv" class="field__input" inputmode="numeric" x-model="card.cvv" placeholder="123" :class="err.cardCvv && 'border-error'" />
+                  <span class="field__error" x-show="err.cardCvv" x-text="err.cardCvv"></span>
+                </div>
+              </div>
+              <div class="recaptcha-ph mb-4">
+                <input type="checkbox" x-model="captcha" aria-label="Robot değilim" />
+                <span>Robot değilim</span>
+                <span class="ml-auto text-[11px] leading-tight">reCAPTCHA<br>(demo)</span>
+              </div>
+              <span class="field__error" x-show="err.captcha" x-text="err.captcha"></span>
+              <div class="flex justify-between mt-2">
+                <button type="button" class="btn btn--secondary" @click="prev()">Geri</button>
+                <button type="button" class="btn" @click="submitPayment()">Devam Et</button>
+              </div>
+            </div>
+
+            <!-- STEP 5: Onay -->
+            <div x-show="step === 5" x-cloak>
+              <h2 class="font-semibold text-ink text-lg mb-4">Sipariş Onayı</h2>
+
+              <div class="account-card mb-4" style="background:var(--tg-bg-soft);padding:16px">
+                <p class="label mb-1">Teslimat</p>
+                <p class="text-sm text-body" x-text="confirmAddr ? (confirmAddr.ad + ' ' + confirmAddr.soyad + ' — ' + confirmAddr.adres + ', ' + confirmAddr.ilce + '/' + confirmAddr.il) : ''"></p>
+                <p class="label mt-3 mb-1">Kargo</p>
+                <p class="text-sm text-body" x-text="shipMethodName"></p>
+                <p class="label mt-3 mb-1">E-posta</p>
+                <p class="text-sm text-body" x-text="email"></p>
+              </div>
+
+              <label class="consent" :class="err.consent1 && 'text-error'">
+                <input type="checkbox" x-model="consent1" />
+                <span><a href="mesafeli-satis.html" target="_blank">Mesafeli Satış Sözleşmesi</a>'ni okudum ve onaylıyorum.</span>
+              </label>
+              <label class="consent" :class="err.consent2 && 'text-error'">
+                <input type="checkbox" x-model="consent2" />
+                <span><a href="kvkk.html" target="_blank">KVKK Aydınlatma Metni</a>'ni okudum ve onaylıyorum.</span>
+              </label>
+              <span class="field__error" x-show="err.consent" x-text="err.consent"></span>
+
+              <div class="flex justify-between mt-4">
+                <button type="button" class="btn btn--secondary" @click="prev()">Geri</button>
+                <button type="button" class="btn btn--lg" @click="placeOrder()">Siparişi Tamamla</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sticky summary -->
+          <aside class="order-summary lg:sticky lg:top-28">
+            <h2 class="font-semibold text-ink text-lg mb-3">Sipariş Özeti</h2>
+            <div class="max-h-64 overflow-y-auto no-scrollbar">
+              <template x-for="i in $store.cart.items" :key="i.id">
+                <div class="flex gap-3 py-2.5 border-b border-line items-center">
+                  <div class="ratio-box rounded-md border border-line shrink-0 relative w-[52px] h-[52px] bg-white" :style="'background-image:url('+i.photo+')'">
+                    <span class="cart-count" style="background:var(--tg-primary)" x-text="i.qty"></span>
+                  </div>
+                  <p class="text-xs flex-1 min-w-0 text-body line-clamp-2" x-text="i.name"></p>
+                  <span class="price text-xs" x-text="$store.cart.fmt(i.price * i.qty)"></span>
+                </div>
+              </template>
+            </div>
+            <div class="order-summary__row mt-2">
+              <span x-text="'Ara Toplam (' + $store.cart.count + ' ürün)'"></span>
+              <span class="price" x-text="$store.cart.fmt($store.cart.subtotal)"></span>
+            </div>
+            <div class="order-summary__row text-success" x-show="$store.cart.discount > 0">
+              <span x-text="'İndirim (' + ($store.cart.coupon ? $store.cart.coupon.code : '') + ')'"></span>
+              <span class="price" style="color:inherit" x-text="'− ' + $store.cart.fmt($store.cart.discount)"></span>
+            </div>
+            <div class="order-summary__row">
+              <span>Kargo</span>
+              <span class="price" x-text="selectedShipFee === 0 ? 'Ücretsiz' : $store.cart.fmt(selectedShipFee)"></span>
+            </div>
+            <div class="order-summary__row total">
+              <span>Genel Toplam</span>
+              <span x-text="$store.cart.fmt(orderTotal)"></span>
+            </div>
+            <p class="kdv-note">Fiyatlara KDV dahildir.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Empty cart redirect state (shown briefly if cart empty) -->
+    <section class="section" x-show="$store.cart.count === 0" x-cloak>
+      <div class="container-tg">
+        <div class="empty-state">
+          <div class="empty-state__icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
+          </div>
+          <p class="empty-state__title">Sepetiniz Boş</p>
+          <p>Ödeme yapabilmek için önce sepetinize ürün ekleyin.</p>
+          <a href="kategori.html" class="btn">Alışverişe Başla</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function tgCheckout() {
+      return {
+        steps: ["Hesap", "Adres", "Kargo", "Ödeme", "Onay"],
+        step: 1,
+        email: "",
+        useAddrId: "new",
+        addr: { ad: "", soyad: "", telefon: "", il: "", ilce: "", adres: "" },
+        saveAddr: true,
+        shipMethods: [
+          { id: "standart", name: "Standart Kargo", eta: "2–4 iş günü içinde teslim", fee: 49.9 },
+          { id: "hizli", name: "Hızlı Kargo", eta: "1–2 iş günü içinde teslim", fee: 79.9 },
+        ],
+        shipMethod: "standart",
+        card: { name: "", no: "", exp: "", cvv: "" },
+        captcha: false,
+        consent1: false,
+        consent2: false,
+        confirmAddr: null,
+        err: {},
+        init() {
+          if (this.$store.cart.count === 0) { location.replace("sepet.html"); return; }
+          if (this.$store.auth.loggedIn) {
+            this.email = this.$store.auth.user.email || "";
+            var def = this.$store.addresses.default;
+            this.useAddrId = def ? def.id : "new";
+          } else {
+            this.useAddrId = "new";
+          }
+        },
+        get selectedShipFee() {
+          if (this.$store.cart.subtotal >= this.$store.cart.freeShip && this.shipMethod === "standart") return 0;
+          var m = this.shipMethods.find(function (x) { return x.id === this.shipMethod; }.bind(this));
+          return m ? m.fee : 0;
+        },
+        get orderTotal() {
+          return Math.max(0, this.$store.cart.subtotal - this.$store.cart.discount + this.selectedShipFee);
+        },
+        get shipMethodName() {
+          var m = this.shipMethods.find(function (x) { return x.id === this.shipMethod; }.bind(this));
+          return m ? m.name + (this.selectedShipFee === 0 ? " (Ücretsiz)" : "") : "";
+        },
+        fmt(v) { return window.tgFormatPrice(v); },
+        next() { this.step = Math.min(5, this.step + 1); window.scrollTo({ top: 0, behavior: "smooth" }); },
+        prev() { this.step = Math.max(1, this.step - 1); window.scrollTo({ top: 0, behavior: "smooth" }); },
+        validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); },
+        guestContinue() {
+          this.err = {};
+          if (!this.validEmail(this.email)) { this.err = { email: "Geçerli bir e-posta adresi girin." }; return; }
+          this.next();
+        },
+        submitAddress() {
+          this.err = {};
+          if (this.useAddrId !== "new" && this.$store.addresses.list.length) {
+            this.confirmAddr = this.$store.addresses.list.find(function (a) { return a.id === this.useAddrId; }.bind(this));
+            this.next();
+            return;
+          }
+          var e = {};
+          if (!this.addr.ad.trim()) e.ad = "Ad gerekli.";
+          if (!this.addr.soyad.trim()) e.soyad = "Soyad gerekli.";
+          if (!this.addr.telefon.trim()) e.telefon = "Telefon gerekli.";
+          if (!this.addr.il.trim()) e.il = "İl gerekli.";
+          if (!this.addr.ilce.trim()) e.ilce = "İlçe gerekli.";
+          if (!this.addr.adres.trim()) e.adres = "Açık adres gerekli.";
+          this.err = e;
+          if (Object.keys(e).length) return;
+          this.confirmAddr = Object.assign({ baslik: "Teslimat" }, this.addr);
+          if (this.$store.auth.loggedIn && this.saveAddr) {
+            this.$store.addresses.add(Object.assign({ baslik: "Teslimat" }, this.addr));
+          }
+          this.next();
+        },
+        submitPayment() {
+          var e = {};
+          if (!this.card.name.trim()) e.cardName = "İsim gerekli.";
+          var digits = this.card.no.replace(/\s/g, "");
+          if (digits.length < 12) e.cardNo = "Geçerli bir kart numarası girin.";
+          if (!/^\d{2}\/\d{2}$/.test(this.card.exp.trim())) e.cardExp = "AA/YY biçiminde girin.";
+          if (!/^\d{3,4}$/.test(this.card.cvv.trim())) e.cardCvv = "Geçerli bir CVV girin.";
+          if (!this.captcha) e.captcha = "Lütfen doğrulamayı tamamlayın.";
+          this.err = e;
+          if (Object.keys(e).length) return;
+          this.next();
+        },
+        placeOrder() {
+          this.err = {};
+          if (!this.consent1 || !this.consent2) {
+            this.err = { consent: "Devam etmek için sözleşmeleri onaylayın.", consent1: !this.consent1, consent2: !this.consent2 };
+            return;
+          }
+          var cart = this.$store.cart;
+          var items = cart.items.map(function (i) {
+            return { id: i.id, name: i.name, price: i.price, photo: i.photo, qty: i.qty };
+          });
+          var id = this.$store.orders.create({
+            email: this.email,
+            items: items,
+            address: this.confirmAddr,
+            shipping: this.shipMethodName,
+            totals: {
+              ara: cart.subtotal,
+              indirim: cart.discount,
+              kargo: this.selectedShipFee,
+              genel: this.orderTotal,
+            },
+          });
+          cart.clear();
+          this.$store.toast.push("Siparişiniz oluşturuldu");
+          location.href = "siparis-tamamlandi.html?id=" + encodeURIComponent(id);
+        },
+      };
+    }
+    window.tgCheckout = tgCheckout;
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Şifre Sıfırla — TG Germany</title>
+  <meta name="description" content="TG Germany hesabınız için yeni bir şifre belirleyin." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main class="bg-soft">
+    <section class="section">
+      <div class="container-tg" style="max-width:520px">
+        <div class="account-card" x-data="tgReset()">
+          <!-- form state -->
+          <div x-show="!done">
+            <span class="label label--accent">Hesabım</span>
+            <h1 class="t-h2 mt-1">Yeni şifre belirle</h1>
+            <p class="text-sm mt-2">Hesabın için yeni bir şifre oluştur.</p>
+
+            <form @submit.prevent="submit()" novalidate class="mt-6">
+              <div class="field" :class="errs.pwd && 'field--error'">
+                <label class="field__label" for="rp-pwd">Yeni şifre</label>
+                <input id="rp-pwd" type="password" class="field__input" x-model="pwd" autocomplete="new-password" placeholder="En az 6 karakter" />
+                <span class="field__error" x-show="errs.pwd" x-text="errs.pwd" x-cloak></span>
+              </div>
+              <div class="field" :class="errs.pwd2 && 'field--error'">
+                <label class="field__label" for="rp-pwd2">Yeni şifre (tekrar)</label>
+                <input id="rp-pwd2" type="password" class="field__input" x-model="pwd2" autocomplete="new-password" placeholder="Şifreyi tekrar girin" />
+                <span class="field__error" x-show="errs.pwd2" x-text="errs.pwd2" x-cloak></span>
+              </div>
+              <button type="submit" class="btn btn--block btn--lg">Şifreyi Güncelle</button>
+            </form>
+            <p class="text-xs text-muted mt-4" x-show="token" x-cloak>Sıfırlama anahtarı: <span x-text="token"></span> (örnek)</p>
+          </div>
+
+          <!-- success state -->
+          <div x-show="done" x-cloak class="text-center">
+            <div class="benefit__icon mx-auto" style="width:56px;height:56px;background:rgba(31,157,87,.12);color:var(--tg-success)">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <h1 class="t-h2 mt-4">Şifren güncellendi</h1>
+            <p class="text-sm mt-2">Yeni şifrenle giriş yapabilirsin.</p>
+            <a href="giris.html" class="btn btn--block btn--lg mt-6">Giriş Yap</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function tgReset() {
+      return {
+        pwd: '', pwd2: '', done: false, errs: {},
+        token: window.TG.parseQuery('t') || '',
+        submit() {
+          var e = {};
+          if (!this.pwd) e.pwd = 'Yeni şifre belirleyin.';
+          else if (this.pwd.length < 6) e.pwd = 'Şifre en az 6 karakter olmalı.';
+          if (!this.pwd2) e.pwd2 = 'Şifreyi tekrar girin.';
+          else if (this.pwd && this.pwd2 !== this.pwd) e.pwd2 = 'Şifreler eşleşmiyor.';
+          this.errs = e;
+          if (Object.keys(e).length) return;
+          this.done = true;
+          this.$store.toast.push('Şifre güncellendi');
+        },
+      };
+    }
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

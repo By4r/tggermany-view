@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ödeme &amp; Teslimat — TG Germany</title>
+  <meta name="description" content="TG Germany ödeme yöntemleri, taksit seçenekleri, kargo süreleri ve ücretsiz kargo koşulları hakkında bilgi sayfası." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main>
+    <div class="page-header">
+      <div class="container-tg">
+        <nav class="breadcrumb" aria-label="Konum">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Ödeme &amp; Teslimat</span>
+        </nav>
+        <div class="page-header__inner">
+          <h1 class="page-header__title">Ödeme &amp; Teslimat</h1>
+          <p class="page-header__sub">Ödeme yöntemleri, kargo süreleri ve teslimat koşulları hakkında bilmeniz gerekenler.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container-tg" style="max-width:860px">
+        <article class="legal">
+          <h2>Ödeme Yöntemleri</h2>
+          <p>Siparişlerinizi kredi ya da banka kartınızla, 256-bit SSL ile korunan güvenli ödeme altyapısı üzerinden tamamlayabilirsiniz.</p>
+          <ul>
+            <li>Kredi kartı ve banka kartı ile tek çekim</li>
+            <li>Anlaşmalı bankaların kartlarına taksit imkânı</li>
+            <li><b>Fiyatlara KDV dahildir;</b> sipariş özetinde ayrıca KDV satırı gösterilmez.</li>
+          </ul>
+
+          <h2>Taksit Seçenekleri</h2>
+          <p>Uygun taksit seçenekleri, kartınızın bağlı olduğu bankaya göre ödeme adımında otomatik olarak listelenir. Taksitli alışverişlerde herhangi bir ek işlem yapmanıza gerek yoktur.</p>
+
+          <h2>Kargo ve Hazırlık Süresi</h2>
+          <ul>
+            <li>Onaylanan siparişler genellikle <b>24 saat içinde</b> hazırlanır ve kargoya teslim edilir.</li>
+            <li>Kargo takip bilgisi, gönderiniz yola çıktığında e-posta ile paylaşılır.</li>
+            <li>Teslimat süresi, bölgeye ve kargo firmasının çalışma takvimine göre değişebilir.</li>
+          </ul>
+
+          <h2>Kargo Ücreti</h2>
+          <p><b>750 ₺ ve üzeri tüm siparişlerde kargo ücretsizdir.</b> Bu tutarın altındaki siparişlerde sabit kargo bedeli, ödeme öncesinde sipariş özetinde net olarak gösterilir.</p>
+
+          <h2>Hasarlı Paket Teslimi</h2>
+          <p>Kargonuzu teslim alırken paketin dış görünümünü kontrol etmenizi öneririz. Pakette ezilme, yırtılma veya açılma gibi bir durum fark ederseniz:</p>
+          <ul>
+            <li>Paketi teslim almadan önce kargo görevlisine <b>hasar tespit tutanağı</b> tutturun.</li>
+            <li>Durumu en kısa sürede <a href="iletisim.html">İletişim</a> sayfamızdaki kanallar üzerinden bize bildirin.</li>
+            <li>Talebiniz incelenerek değişim veya iade süreci başlatılır.</li>
+          </ul>
+
+          <h2>Yardıma mı ihtiyacınız var?</h2>
+          <p>Sipariş durumunuzu <a href="siparis-takip.html">Sipariş Takip</a> sayfasından sorgulayabilir, sık sorulan sorular için <a href="sss.html">SSS</a> sayfamıza göz atabilir veya doğrudan <a href="iletisim.html">İletişim</a> üzerinden bize ulaşabilirsiniz.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

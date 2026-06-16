@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sipariş Detayı — TG Germany</title>
+  <meta name="description" content="TG Germany sipariş detayınız: durum, ürünler, teslimat adresi, özet ve iade işlemleri." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main x-data="tgOrderDetail()" x-init="init()">
+
+    <!-- ===== Valid order ===== -->
+    <template x-if="order">
+      <div>
+        <div class="page-header">
+          <div class="container-tg">
+            <nav class="breadcrumb" aria-label="Sayfa konumu">
+              <a href="index.html">Ana Sayfa</a><span class="sep">/</span>
+              <a href="hesabim.html#siparisler">Siparişlerim</a><span class="sep">/</span>
+              <span class="current" x-text="order.id"></span>
+            </nav>
+            <div class="page-header__inner" style="padding-top:0">
+              <div class="flex items-center gap-3 flex-wrap">
+                <h1 class="page-header__title" x-text="'Sipariş ' + order.id"></h1>
+                <span class="status-badge" :class="badgeClass(order.status)" x-text="order.status"></span>
+                <span class="demo-tag" x-show="order.demo" x-cloak>Demo verisi</span>
+              </div>
+              <p class="page-header__sub" x-text="fmtDate(order.date) + ' tarihinde verildi'"></p>
+            </div>
+          </div>
+        </div>
+
+        <section class="section">
+          <div class="container-tg">
+            <!-- status steps -->
+            <div class="account-card mb-6">
+              <h2 class="font-semibold text-ink mb-2">Sipariş Durumu</h2>
+              <div class="order-status">
+                <template x-for="(s, idx) in steps" :key="idx">
+                  <div class="order-status__step" :class="stepState(idx)">
+                    <div class="order-status__dot">
+                      <svg x-show="stepState(idx)==='is-done'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                      <span x-show="stepState(idx)!=='is-done'" x-text="idx+1"></span>
+                    </div>
+                    <span x-text="s"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-3">
+              <!-- left: items + address -->
+              <div class="lg:col-span-2 grid gap-6">
+                <!-- items -->
+                <div class="account-card">
+                  <h2 class="font-semibold text-ink mb-4">Ürünler</h2>
+                  <div class="grid gap-3">
+                    <template x-for="(it, idx) in order.items" :key="idx">
+                      <div class="flex gap-3 items-center pb-3" :class="idx < order.items.length-1 && 'border-b border-line'">
+                        <div class="rounded-md shrink-0 border border-line" :style="{ width:'64px', height:'64px', backgroundColor:'#fff', backgroundSize:'cover', backgroundPosition:'center', backgroundRepeat:'no-repeat', backgroundImage:'url('+it.photo+')' }"></div>
+                        <div class="flex-1 min-w-0">
+                          <a :href="'urun.html#'+it.id" class="block text-sm font-medium text-ink line-clamp-2" x-text="it.name"></a>
+                          <p class="text-xs text-muted mt-1" x-text="it.qty + ' adet'"></p>
+                        </div>
+                        <span class="price text-sm shrink-0" x-text="$store.cart.fmt(it.price * it.qty)"></span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+
+                <!-- address -->
+                <div class="account-card" x-show="order.address">
+                  <h2 class="font-semibold text-ink mb-3">Teslimat Adresi</h2>
+                  <template x-if="order.address">
+                    <div class="text-sm">
+                      <p class="text-ink font-medium" x-text="(order.address.ad || '') + ' ' + (order.address.soyad || '')"></p>
+                      <p class="mt-1" x-text="order.address.adres"></p>
+                      <p x-text="(order.address.ilce || '') + (order.address.il ? ' / ' + order.address.il : '')"></p>
+                      <p class="text-muted mt-1" x-show="order.address.telefon" x-text="order.address.telefon"></p>
+                    </div>
+                  </template>
+                  <p class="text-sm mt-3 text-muted" x-show="order.shipping" x-text="'Kargo: ' + order.shipping"></p>
+                </div>
+
+                <!-- iade flow -->
+                <div class="account-card">
+                  <div class="flex items-center justify-between flex-wrap gap-2">
+                    <h2 class="font-semibold text-ink">İade İşlemleri</h2>
+                    <button type="button" class="btn btn--secondary btn--sm" @click="returnOpen=!returnOpen" x-show="!returnDone && returns.length===0">İade Oluştur</button>
+                  </div>
+
+                  <!-- existing returns -->
+                  <template x-if="returns.length">
+                    <div class="grid gap-3 mt-4">
+                      <template x-for="r in returns" :key="r.id">
+                        <div class="p-3 rounded-md border border-line" style="border-color:var(--tg-line)">
+                          <div class="flex items-center justify-between gap-2 flex-wrap">
+                            <span class="font-medium text-ink text-sm">İade talebi</span>
+                            <span class="status-badge status-badge--prep" x-text="r.durum"></span>
+                          </div>
+                          <p class="text-sm mt-1">Sebep: <span class="text-ink" x-text="r.sebep"></span></p>
+                          <p class="text-xs text-muted mt-1" x-text="fmtDate(r.tarih)"></p>
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+
+                  <!-- empty (no return yet, form closed) -->
+                  <p class="text-sm mt-3" x-show="!returns.length && !returnOpen">14 gün içinde, kullanılmamış ürünler için iade talebi oluşturabilirsin.</p>
+
+                  <!-- return form -->
+                  <form @submit.prevent="submitReturn()" x-show="returnOpen" x-collapse class="mt-4" novalidate>
+                    <div class="field" :class="returnErr && 'field--error'">
+                      <label class="field__label">İade sebebi <span class="req">*</span></label>
+                      <select x-model="returnReason">
+                        <option value="">Sebep seçin</option>
+                        <option>Ürün beklediğim gibi değil</option>
+                        <option>Yanlış / eksik ürün geldi</option>
+                        <option>Üründe hasar / arıza var</option>
+                        <option>Vazgeçtim</option>
+                        <option>Diğer</option>
+                      </select>
+                      <span class="field__error" x-show="returnErr" x-text="returnErr" x-cloak></span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2" style="max-width:340px">
+                      <button type="button" class="btn btn--secondary btn--sm" @click="returnOpen=false">Vazgeç</button>
+                      <button type="submit" class="btn btn--sm">İade Talebini Gönder</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <!-- right: summary -->
+              <div>
+                <div class="order-summary lg:sticky" style="top:120px">
+                  <h2 class="font-semibold text-ink mb-3">Sipariş Özeti</h2>
+                  <div class="order-summary__row">
+                    <span>Ara Toplam</span>
+                    <span class="price" x-text="$store.cart.fmt(order.totals.ara)"></span>
+                  </div>
+                  <div class="order-summary__row" x-show="order.totals.indirim > 0">
+                    <span>İndirim</span>
+                    <span class="price" style="color:var(--tg-sale)" x-text="'-' + $store.cart.fmt(order.totals.indirim)"></span>
+                  </div>
+                  <div class="order-summary__row">
+                    <span>Kargo</span>
+                    <span class="price" x-text="order.totals.kargo > 0 ? $store.cart.fmt(order.totals.kargo) : 'Ücretsiz'"></span>
+                  </div>
+                  <div class="order-summary__row total">
+                    <span>Genel Toplam</span>
+                    <span class="price" x-text="$store.cart.fmt(order.totals.genel)"></span>
+                  </div>
+                  <p class="kdv-note">Fiyatlara KDV dahildir.</p>
+                  <button type="button" class="btn btn--secondary btn--block mt-4" @click="$store.toast.push('Fatura hazırlanıyor (örnek)')">Faturayı Görüntüle</button>
+                  <a href="hesabim.html#siparisler" class="btn btn--ghost btn--block mt-2">Siparişlerime Dön</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </template>
+
+    <!-- ===== Missing / invalid order ===== -->
+    <template x-if="!order">
+      <div>
+        <div class="page-header">
+          <div class="container-tg">
+            <nav class="breadcrumb" aria-label="Sayfa konumu">
+              <a href="index.html">Ana Sayfa</a><span class="sep">/</span>
+              <a href="hesabim.html#siparisler">Siparişlerim</a><span class="sep">/</span>
+              <span class="current">Sipariş Detayı</span>
+            </nav>
+          </div>
+        </div>
+        <section class="section">
+          <div class="container-tg" style="max-width:560px">
+            <div class="account-card empty-state">
+              <div class="empty-state__icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              </div>
+              <p class="empty-state__title">Sipariş bulunamadı</p>
+              <p>Aradığın sipariş kaydı bulunamadı. Bağlantı geçersiz veya sipariş silinmiş olabilir.</p>
+              <a href="hesabim.html#siparisler" class="btn">Siparişlerime Git</a>
+            </div>
+          </div>
+        </section>
+      </div>
+    </template>
+
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function tgOrderDetail() {
+      return {
+        order: null,
+        steps: ['Hazırlanıyor', 'Kargoda', 'Teslim Edildi'],
+        returnOpen: false, returnReason: '', returnErr: '', returnDone: false,
+        returns: [],
+        init() {
+          var id = window.TG.parseQuery('id');
+          this.order = id ? this.$store.orders.get(id) : null;
+          if (this.order) this.refreshReturns();
+        },
+        refreshReturns() { this.returns = this.$store.returns.forOrder(this.order.id); },
+        statusIndex() {
+          var i = this.steps.indexOf(this.order.status);
+          return i === -1 ? 0 : i;
+        },
+        stepState(idx) {
+          var cur = this.statusIndex();
+          if (idx < cur) return 'is-done';
+          if (idx === cur) return 'is-current';
+          return '';
+        },
+        badgeClass(status) {
+          if (status === 'Teslim Edildi') return 'status-badge--done';
+          if (status === 'Kargoda') return 'status-badge--ship';
+          return 'status-badge--prep';
+        },
+        fmtDate(iso) {
+          try { return new Date(iso).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' }); }
+          catch (e) { return ''; }
+        },
+        submitReturn() {
+          this.returnErr = '';
+          if (!this.returnReason) { this.returnErr = 'Lütfen bir iade sebebi seçin.'; return; }
+          this.$store.returns.add({ orderId: this.order.id, items: this.order.items, sebep: this.returnReason });
+          this.returnOpen = false; this.returnDone = true; this.returnReason = '';
+          this.refreshReturns();
+          this.$store.toast.push('İade talebin alındı');
+        },
+      };
+    }
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Satış Noktaları — TG Germany</title>
+  <meta name="description" content="TG Germany ürünlerini bulabileceğiniz yurt içi ve yurt dışı satış noktaları. Size en yakın noktadan ulaşın ya da online satın alın." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main>
+    <!-- Breadcrumb -->
+    <div class="container-tg">
+      <nav class="breadcrumb" aria-label="Sayfa yolu">
+        <a href="index.html">Ana Sayfa</a>
+        <span class="sep">/</span>
+        <span class="current">Satış Noktaları</span>
+      </nav>
+    </div>
+
+    <!-- Page header -->
+    <section class="page-header">
+      <div class="container-tg page-header__inner">
+        <span class="label label--accent">Bizi Bulun</span>
+        <h1 class="page-header__title mt-2">Satış Noktaları</h1>
+        <p class="page-header__sub">TG Germany ürünlerini aşağıdaki yurt içi ve yurt dışı satış noktalarında bulabilir, dilerseniz online mağazamızdan da satın alabilirsiniz.</p>
+      </div>
+    </section>
+
+    <!-- Tabs + logo wall -->
+    <section class="section" x-data="dealerTabs()">
+      <div class="container-tg">
+        <div class="flex justify-center mb-8">
+          <div class="seg" role="tablist" aria-label="Bölge seçimi">
+            <button type="button" role="tab" :aria-selected="tab==='tr'" :class="tab==='tr' && 'is-active'" @click="tab='tr'">Türkiye</button>
+            <button type="button" role="tab" :aria-selected="tab==='global'" :class="tab==='global' && 'is-active'" @click="tab='global'">Yurtdışı</button>
+          </div>
+        </div>
+
+        <!-- Logo wall -->
+        <div x-show="dealers().length" class="logo-wall">
+          <template x-for="d in dealers()" :key="d.name">
+            <div class="logo-cell" x-text="d.name"></div>
+          </template>
+        </div>
+
+        <!-- Empty tab -->
+        <div x-show="!dealers().length" x-cloak class="empty-state">
+          <div class="empty-state__icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 1114 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          </div>
+          <p class="empty-state__title">Henüz satış noktası eklenmedi</p>
+          <p>Bu bölgede henüz satış noktası eklenmedi — online satın alın.</p>
+          <a href="kategori.html" class="btn">Online Satın Al</a>
+        </div>
+
+        <p class="text-xs text-muted mt-6 text-center" x-show="dealers().length" x-cloak>
+          Satış noktası adları temsilidir; güncel mağaza listesi firma tarafından sağlandıkça yenilenecektir.
+        </p>
+      </div>
+    </section>
+
+    <!-- Map placeholder -->
+    <section class="section bg-soft">
+      <div class="container-tg">
+        <div class="map-ph">
+          <div class="text-center">
+            <span class="map-ph__pin inline-grid place-items-center mb-2">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-5.2-7-11a7 7 0 1114 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            </span>
+            <p class="font-semibold text-ink">Harita</p>
+            <p class="text-sm">Mağaza konumlarını gösteren interaktif harita firma onayından sonra eklenecektir.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <!-- Global toast host -->
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    function dealerTabs() {
+      return {
+        tab: "tr",
+        dealers: function () {
+          var d = window.TG.dealers || {};
+          return (this.tab === "tr" ? d.tr : d.global) || [];
+        },
+      };
+    }
+  </script>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

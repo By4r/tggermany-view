@@ -5,6 +5,22 @@
 
 ## Where we are
 
+**FULL STOREFRONT COMPLETE (28 sayfa)** — homepage + **27 iç sayfa** (tam production e-ticaret akışı, UI-only, localStorage mock) implement edildi, doğrulandı ve canlıda. Static HTML + Tailwind (CDN) + Alpine.js, build yok.
+
+**Implement kurgusu (uygulandı):** lead (delegate) + **Faz 0 tek-yazar foundation** (donduruldu, `91b5b61`) + **4 paralel teammate** (shop · auth-account · kurumsal · destek-yasal), her biri frontend-design kalite lensi + kendi eval-iterate (≥2 tur, 3 breakpoint Playwright) döngüsüyle. Lead denetimi: her sayfa statik + bağımsız console/hidrate/state smoke-test'ten geçti.
+
+**Faz 0 foundation genişletmesi** (`assets/js/{data,main,tw-config}.js`, `partials/{header,footer}.html`, `assets/css/styles.css`): `$store.auth/wishlist/orders/addresses/warranties/reviews/returns/recent/toast`, SEED-DEFAULT util (demo-işaretli `TG-DEMO-*`, girişli+boşken), `tgRequireAuth` guard, cart kupon(`TG10`)/shipping/grandTotal, ürün detay/filtre/sort/search/router helper'ları, oturum açık/kapalı header + hesap dropdown + favori ikonu, ve tüm iç-sayfa paylaşılan CSS component'leri. Kontrat: `tasks/foundation-ref.md`.
+
+**27 iç sayfa:** kategori · urun · sepet · odeme · arama · siparis-tamamlandi · giris · kayit · sifremi-unuttum · sifre-sifirla · e-posta-dogrula · hesabim (6 hash-section) · siparis-detay · hakkimizda · kurumsal-satis · satis-noktalari · iletisim · ek-garanti · sss · siparis-takip · odeme-teslimat · iade-degisim · kvkk · aydinlatma · mesafeli-satis · cerezler · 404.
+
+**Entegrasyon QA (lead, doğrulandı):** header iki hali · favori senkron (kategori→urun→header badge) · misafir checkout → `TG-YYMMDD-NNN` sipariş → onay → seed demo sipariş → hesabım/siparis-detay (order-status + demo-tag) · korumalı `?next=` redirect · iç link bütünlüğü (kırık link yok) · **tüm journey 0 console hatası**. Foundation bug düzeltildi: cart-drawer thumbnail `:style` string'i statik sizing'i eziyordu → object-form ile 64×64.
+
+> **Kalan açık iş:** gerçek ürün foto · gerçek iletişim/telefon/adres/sosyal (`.data-tbd`) · yasal metin nihai içeriği (hukuk onayı) · form backend + reCAPTCHA (şu an mock) · DE iç-gövde çevirisi (skeleton) · opsiyonel foundation cila: `.consent__error` + `.legal__notice` kanonik sınıfları + auth aside için açık-renk logo.
+
+---
+
+### (önceki) Homepage durumu
+
 **Homepage is COMPLETE** — a faithful, clean replica of ttec.com.tr's visual language using TG Germany's real brand assets. Built with static HTML + Tailwind (CDN) + Alpine.js, no build step.
 
 Delivered on the homepage:

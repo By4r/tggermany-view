@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ek Garanti — TG Germany</title>
+  <meta name="description" content="TG Germany ek garanti: ürününüzü seri numarası ve fatura görseliyle kaydedin, garanti süresini uzatın veya mevcut başvurunuzu sorgulayın." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main x-data="tgWarranty()">
+    <div class="page-header">
+      <div class="container-tg">
+        <nav class="breadcrumb" aria-label="Konum">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Ek Garanti</span>
+        </nav>
+        <div class="page-header__inner">
+          <h1 class="page-header__title">Ek Garanti</h1>
+          <p class="page-header__sub">Satın aldığınız TG Germany ürününü kaydederek koruma süresini uzatın. Mevcut başvurunuzun durumunu da buradan sorgulayabilirsiniz.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container-tg" style="max-width:680px">
+
+        <!-- Mode switch -->
+        <div class="seg mb-7" role="tablist" aria-label="Ek garanti modu">
+          <button type="button" role="tab" :class="mode==='kayit' && 'is-active'" :aria-selected="mode==='kayit'" @click="mode='kayit'">Yeni Başvuru</button>
+          <button type="button" role="tab" :class="mode==='sorgu' && 'is-active'" :aria-selected="mode==='sorgu'" @click="mode='sorgu'">Başvuru Sorgulama</button>
+        </div>
+
+        <!-- ====== KAYIT ====== -->
+        <div x-show="mode==='kayit'">
+          <!-- success -->
+          <div class="account-card" x-show="registered" x-cloak>
+            <div class="empty-state" style="padding:24px 8px">
+              <div class="empty-state__icon" style="background:rgba(31,157,87,.12);color:var(--tg-success)">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              </div>
+              <p class="empty-state__title">Başvurunuz alındı</p>
+              <p>Ek garanti başvurunuz değerlendirmeye alınmıştır. Sonuç hakkında e-posta ile bilgilendirileceksiniz.</p>
+              <div class="flex flex-wrap gap-3 justify-center mt-4">
+                <button type="button" class="btn btn--secondary" @click="resetForm()">Yeni Başvuru Yap</button>
+                <button type="button" class="btn" @click="mode='sorgu'">Başvurularımı Sorgula</button>
+              </div>
+            </div>
+          </div>
+
+          <form class="account-card" @submit.prevent="submitRegister()" x-show="!registered" x-cloak>
+            <div class="grid sm:grid-cols-2 gap-x-4">
+              <div class="field">
+                <label class="field__label" for="g-ad">Ad <span class="req">*</span></label>
+                <input id="g-ad" type="text" class="field__input" :class="err.ad && 'field--error'" x-model="f.ad" @input="err.ad=''" />
+                <span class="field__error" x-show="err.ad" x-text="err.ad" x-cloak></span>
+              </div>
+              <div class="field">
+                <label class="field__label" for="g-soyad">Soyad <span class="req">*</span></label>
+                <input id="g-soyad" type="text" class="field__input" :class="err.soyad && 'field--error'" x-model="f.soyad" @input="err.soyad=''" />
+                <span class="field__error" x-show="err.soyad" x-text="err.soyad" x-cloak></span>
+              </div>
+              <div class="field">
+                <label class="field__label" for="g-email">E-posta <span class="req">*</span></label>
+                <input id="g-email" type="email" class="field__input" :class="err.email && 'field--error'" x-model="f.email" @input="err.email=''" />
+                <span class="field__error" x-show="err.email" x-text="err.email" x-cloak></span>
+              </div>
+              <div class="field">
+                <label class="field__label" for="g-tel">Telefon <span class="req">*</span></label>
+                <input id="g-tel" type="tel" class="field__input" :class="err.telefon && 'field--error'" x-model="f.telefon" placeholder="05XX XXX XX XX" @input="err.telefon=''" />
+                <span class="field__error" x-show="err.telefon" x-text="err.telefon" x-cloak></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="g-seri">Ürün Seri No <span class="req">*</span></label>
+              <input id="g-seri" type="text" class="field__input" :class="err.urunSeriNo && 'field--error'" x-model="f.urunSeriNo" placeholder="Örn. TG-AUD-01-XXXXXX" @input="err.urunSeriNo=''" />
+              <span class="field__error" x-show="err.urunSeriNo" x-text="err.urunSeriNo" x-cloak></span>
+              <span class="field__hint">Seri numarasını ürün kutusunun üzerinde veya cihaz etiketinde bulabilirsiniz.</span>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-x-4">
+              <div class="field">
+                <label class="field__label" for="g-yer">Satın Alınan Yer <span class="req">*</span></label>
+                <select id="g-yer" :class="err.satinAlinanYer && 'field--error'" x-model="f.satinAlinanYer" @change="err.satinAlinanYer=''">
+                  <option value="">Seçiniz</option>
+                  <option>TG Germany Online Mağaza</option>
+                  <option>Yetkili Bayi</option>
+                  <option>Perakende Satış Noktası</option>
+                  <option>Pazaryeri Platformu</option>
+                  <option>Diğer</option>
+                </select>
+                <span class="field__error" x-show="err.satinAlinanYer" x-text="err.satinAlinanYer" x-cloak></span>
+              </div>
+              <div class="field">
+                <label class="field__label" for="g-tarih">Satın Alma Tarihi <span class="req">*</span></label>
+                <input id="g-tarih" type="date" class="field__input" :class="err.tarih && 'field--error'" x-model="f.tarih" @input="err.tarih=''" />
+                <span class="field__error" x-show="err.tarih" x-text="err.tarih" x-cloak></span>
+              </div>
+            </div>
+
+            <!-- Fatura upload -->
+            <div class="field">
+              <label class="field__label">Fatura Görseli <span class="req">*</span></label>
+              <div class="file-upload">
+                <label class="btn btn--secondary btn--sm" style="cursor:pointer">
+                  Dosya Seç
+                  <input type="file" accept=".jpg,.jpeg,.png,.pdf" class="sr-only" @change="onFile($event)" />
+                </label>
+                <span class="file-upload__name" x-text="f.faturaAdi || 'Dosya seçilmedi'"></span>
+              </div>
+              <span class="field__hint">Kabul edilen formatlar: JPG, PNG, PDF.</span>
+              <span class="field__error" x-show="err.fatura" x-text="err.fatura" x-cloak></span>
+            </div>
+
+            <!-- Consents -->
+            <label class="consent">
+              <input type="checkbox" x-model="f.kvkk" @change="err.kvkk=''" />
+              <span><a href="aydinlatma.html">Aydınlatma Metni</a>’ni okudum ve kişisel verilerimin işlenmesini kabul ediyorum. <span class="req">*</span></span>
+            </label>
+            <span class="field__error" style="margin:-6px 0 12px" x-show="err.kvkk" x-text="err.kvkk" x-cloak></span>
+
+            <label class="consent">
+              <input type="checkbox" x-model="f.pazarlama" />
+              <span>Kampanya ve yeniliklerden e-posta ile haberdar olmak istiyorum. (İsteğe bağlı)</span>
+            </label>
+
+            <!-- reCAPTCHA placeholder -->
+            <div class="recaptcha-ph mt-2 mb-5">
+              <input type="checkbox" x-model="f.recaptcha" @change="err.recaptcha=''" aria-label="Robot değilim" />
+              <span>Robot değilim</span>
+            </div>
+            <span class="field__error" style="margin:-12px 0 12px;display:block" x-show="err.recaptcha" x-text="err.recaptcha" x-cloak></span>
+
+            <button type="submit" class="btn btn--block">Başvuruyu Tamamla</button>
+            <p class="text-xs text-muted mt-3">* Ek garanti kapsamı, başvuru onayına ve ürün kategorisine göre değişebilir.</p>
+          </form>
+        </div>
+
+        <!-- ====== SORGU ====== -->
+        <div id="sorgula" x-show="mode==='sorgu'" x-cloak>
+          <form class="account-card" @submit.prevent="submitQuery()">
+            <p class="text-sm mb-4">Başvuru numaranız veya ürün seri numaranızla başvuru durumunuzu sorgulayın.</p>
+            <div class="field">
+              <label class="field__label" for="q-ref">Başvuru No veya Ürün Seri No <span class="req">*</span></label>
+              <input id="q-ref" type="text" class="field__input" :class="qErr && 'field--error'" x-model="qRef" placeholder="Örn. wr-... veya TG-AUD-01-XXXXXX" @input="qErr=''" />
+              <span class="field__error" x-show="qErr" x-text="qErr" x-cloak></span>
+            </div>
+            <button type="submit" class="btn btn--block">Sorgula</button>
+          </form>
+
+          <!-- found -->
+          <template x-if="qState==='found' && qResult">
+            <div class="account-card mt-6">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <span class="label">Başvuru No</span>
+                  <p class="font-semibold text-ink" x-text="qResult.id"></p>
+                </div>
+                <span class="status-badge status-badge--prep" x-text="qResult.durum"></span>
+              </div>
+              <div class="order-summary__row" style="border-top:1px solid var(--tg-line);padding-top:12px;margin-top:10px">
+                <span>Ürün Seri No</span><span class="text-ink" x-text="qResult.urunSeriNo"></span>
+              </div>
+              <div class="order-summary__row">
+                <span>Satın Alınan Yer</span><span class="text-ink" x-text="qResult.satinAlinanYer"></span>
+              </div>
+            </div>
+          </template>
+
+          <!-- not found -->
+          <div class="account-card mt-6" x-show="qState==='notfound'" x-cloak>
+            <div class="empty-state" style="padding:24px 8px">
+              <div class="empty-state__icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              </div>
+              <p class="empty-state__title">Başvuru bulunamadı</p>
+              <p>Girdiğiniz bilgilerle eşleşen bir başvuru bulamadık. Bilgileri kontrol edin veya bizimle iletişime geçin.</p>
+              <a href="iletisim.html" class="btn">İletişime Geç</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    function tgWarranty() {
+      var blank = function () {
+        return { ad: "", soyad: "", email: "", telefon: "", urunSeriNo: "", satinAlinanYer: "", tarih: "", faturaAdi: "", kvkk: false, pazarlama: false, recaptcha: false };
+      };
+      return {
+        mode: "kayit",
+        registered: false,
+        f: blank(),
+        err: {},
+        qRef: "",
+        qErr: "",
+        qState: "idle",
+        qResult: null,
+        init() {
+          if (location.hash === "#sorgula") this.mode = "sorgu";
+        },
+        onFile(e) {
+          this.err.fatura = "";
+          var file = e.target.files && e.target.files[0];
+          if (!file) { this.f.faturaAdi = ""; return; }
+          var ok = /\.(jpe?g|png|pdf)$/i.test(file.name);
+          if (!ok) {
+            this.f.faturaAdi = "";
+            this.err.fatura = "Yalnızca JPG, PNG veya PDF dosyaları kabul edilir.";
+            e.target.value = "";
+            return;
+          }
+          this.f.faturaAdi = file.name;
+        },
+        submitRegister() {
+          var e = {};
+          if (!this.f.ad.trim()) e.ad = "Ad gerekli.";
+          if (!this.f.soyad.trim()) e.soyad = "Soyad gerekli.";
+          if (!/^\S+@\S+\.\S+$/.test(this.f.email.trim())) e.email = "Geçerli bir e-posta girin.";
+          if (!this.f.telefon.trim()) e.telefon = "Telefon gerekli.";
+          if (!this.f.urunSeriNo.trim()) e.urunSeriNo = "Ürün seri no gerekli.";
+          if (!this.f.satinAlinanYer) e.satinAlinanYer = "Satın alınan yeri seçin.";
+          if (!this.f.tarih) e.tarih = "Satın alma tarihi gerekli.";
+          if (!this.f.faturaAdi) e.fatura = "Fatura görseli yükleyin.";
+          if (!this.f.kvkk) e.kvkk = "Devam etmek için Aydınlatma Metni’ni onaylayın.";
+          if (!this.f.recaptcha) e.recaptcha = "Lütfen robot olmadığınızı doğrulayın.";
+          this.err = e;
+          if (Object.keys(e).length) return;
+
+          if (this.$store.auth.loggedIn) {
+            this.$store.warranties.add({
+              urunSeriNo: this.f.urunSeriNo.trim(),
+              satinAlinanYer: this.f.satinAlinanYer,
+              tarih: this.f.tarih,
+              faturaAdi: this.f.faturaAdi,
+            });
+          }
+          this.$store.toast.push("Başvurunuz alındı");
+          this.registered = true;
+        },
+        resetForm() {
+          this.f = blank();
+          this.err = {};
+          this.registered = false;
+        },
+        submitQuery() {
+          if (!this.qRef.trim()) { this.qErr = "Bir başvuru no veya seri no girin."; return; }
+          var ref = this.qRef.trim().toLowerCase();
+          var list = (this.$store.warranties && this.$store.warranties.list) || [];
+          var found = list.find(function (w) {
+            return (w.id || "").toLowerCase() === ref || (w.urunSeriNo || "").toLowerCase() === ref;
+          });
+          if (found) { this.qResult = found; this.qState = "found"; }
+          else { this.qResult = null; this.qState = "notfound"; }
+        },
+      };
+    }
+    window.tgWarranty = tgWarranty;
+  </script>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

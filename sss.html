@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sıkça Sorulan Sorular — TG Germany</title>
+  <meta name="description" content="TG Germany sıkça sorulan sorular: kargo, iade, garanti, sipariş ve ödeme konularında en çok merak edilenlerin yanıtları." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main x-data="tgFaq()">
+    <div class="page-header">
+      <div class="container-tg">
+        <nav class="breadcrumb" aria-label="Konum">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Sıkça Sorulan Sorular</span>
+        </nav>
+        <div class="page-header__inner">
+          <h1 class="page-header__title">Sıkça Sorulan Sorular</h1>
+          <p class="page-header__sub">Kargo, iade, garanti ve siparişlerinizle ilgili en çok merak edilenleri burada bulabilirsiniz.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container-tg" style="max-width:820px">
+
+        <!-- Search box -->
+        <form class="search-box" @submit.prevent role="search" style="margin-bottom:8px">
+          <svg class="search-box__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" x-model="q" placeholder="Sorunuzu arayın (örn. kargo, iade, garanti)" aria-label="Soru ara" autocomplete="off" />
+          <button type="button" class="search-clear" x-show="q.length" @click="q=''" aria-label="Temizle" x-cloak>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </form>
+
+        <!-- Topic tiles (jump links) — hidden while searching -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5 mb-10" x-show="!q.trim()" x-cloak>
+          <template x-for="(t, i) in topics" :key="t.topic">
+            <a :href="'#konu-'+i" class="account-card flex items-center gap-2"
+               style="padding:14px 16px" x-text="t.topic"></a>
+          </template>
+        </div>
+
+        <!-- Results / topics -->
+        <div x-show="!q.trim()" x-cloak>
+          <template x-for="(t, i) in topics" :key="t.topic">
+            <section :id="'konu-'+i" style="margin-bottom:28px">
+              <h2 class="t-h2" style="font-size:1.1rem;margin-bottom:4px" x-text="t.topic"></h2>
+              <template x-for="(item, j) in t.items" :key="j">
+                <div class="accordion__item" x-data="{ open:false }">
+                  <button type="button" class="accordion__head" @click="open=!open" :aria-expanded="open">
+                    <span x-text="item.q"></span>
+                    <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                  <div class="accordion__body" x-show="open" x-collapse x-cloak>
+                    <p x-text="item.a"></p>
+                  </div>
+                </div>
+              </template>
+            </section>
+          </template>
+        </div>
+
+        <!-- Filtered (flat) results when searching -->
+        <div x-show="q.trim()" x-cloak>
+          <p class="toolbar__count" style="margin-bottom:8px" x-show="filtered.length">
+            “<span x-text="q.trim()"></span>” için <span x-text="filtered.length"></span> sonuç
+          </p>
+          <template x-for="(item, k) in filtered" :key="k">
+            <div class="accordion__item" x-data="{ open:false }">
+              <button type="button" class="accordion__head" @click="open=!open" :aria-expanded="open">
+                <span class="flex flex-col items-start gap-1" style="text-align:left">
+                  <span class="label" x-text="item.topic"></span>
+                  <span x-text="item.q"></span>
+                </span>
+                <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+              <div class="accordion__body" x-show="open" x-collapse x-cloak>
+                <p x-text="item.a"></p>
+              </div>
+            </div>
+          </template>
+
+          <!-- No results -->
+          <div class="empty-state" x-show="!filtered.length">
+            <div class="empty-state__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+            <p class="empty-state__title">Aramanızla eşleşen soru bulunamadı</p>
+            <p>Farklı bir kelimeyle aramayı deneyebilir veya doğrudan bizimle iletişime geçebilirsiniz.</p>
+            <a href="iletisim.html" class="btn">İletişime Geç</a>
+          </div>
+        </div>
+
+        <!-- Contact fallback (always under topics) -->
+        <div class="account-card mt-10 flex flex-col sm:flex-row sm:items-center gap-4 justify-between" x-show="!q.trim()">
+          <div>
+            <p class="font-semibold text-ink">Aradığınızı bulamadınız mı?</p>
+            <p class="text-sm">Destek ekibimiz sorularınızı yanıtlamak için hazır.</p>
+          </div>
+          <a href="iletisim.html" class="btn btn--secondary shrink-0">İletişime Geç</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    function tgFaq() {
+      return {
+        q: "",
+        get topics() { return window.TG.faq; },
+        get filtered() {
+          var q = (this.q || "").trim().toLocaleLowerCase("tr-TR");
+          if (!q) return [];
+          var out = [];
+          window.TG.faq.forEach(function (t) {
+            t.items.forEach(function (it) {
+              if (it.q.toLocaleLowerCase("tr-TR").indexOf(q) !== -1 ||
+                  it.a.toLocaleLowerCase("tr-TR").indexOf(q) !== -1 ||
+                  t.topic.toLocaleLowerCase("tr-TR").indexOf(q) !== -1) {
+                out.push({ topic: t.topic, q: it.q, a: it.a });
+              }
+            });
+          });
+          return out;
+        },
+      };
+    }
+    window.tgFaq = tgFaq;
+  </script>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

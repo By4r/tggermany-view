@@ -210,7 +210,7 @@
           </div>
           <template x-for="i in $store.cart.items" :key="i.id">
             <div class="flex gap-3 py-3 border-b border-line">
-              <div class="ratio-box rounded-md shrink-0 border border-line" style="width:64px;height:64px;background-color:#fff" :style="'background-image:url('+i.photo+')'"></div>
+              <div class="ratio-box rounded-md shrink-0 border border-line" style="width:64px;height:64px;background-color:#fff" :style="{ backgroundImage: 'url('+i.photo+')' }"></div>
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-ink line-clamp-2" x-text="i.name"></p>
                 <div class="flex items-center justify-between mt-2">

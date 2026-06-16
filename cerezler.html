@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Çerez Politikası — TG Germany</title>
+  <meta name="description" content="TG Germany çerez politikası: kullanılan çerez türleri, kullanım amaçları ve çerez tercihlerinizi nasıl yönetebileceğiniz." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main>
+    <div class="page-header">
+      <div class="container-tg">
+        <nav class="breadcrumb" aria-label="Konum">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Çerez Politikası</span>
+        </nav>
+        <div class="page-header__inner">
+          <h1 class="page-header__title">Çerez Politikası</h1>
+          <p class="page-header__sub">Sitemizde kullanılan çerezleri, kullanım amaçlarını ve çerez tercihlerinizi nasıl yöneteceğinizi açıklar.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container-tg" style="max-width:860px">
+        <p class="legal__updated">Son güncelleme: 16 Haziran 2026</p>
+
+        <div class="account-card" style="margin:18px 0 8px;border-left:3px solid var(--tg-amber)">
+          <p class="text-sm" style="margin:0">
+            <b class="text-ink">Bilgilendirme:</b> Aşağıdaki metin yapısal bir taslaktır.
+            Bu metnin nihai içeriği hukuk onayı sonrası eklenecektir.
+          </p>
+        </div>
+
+        <nav class="legal__toc" aria-label="İçindekiler">
+          <p class="label" style="margin-bottom:8px">İçindekiler</p>
+          <a href="#a">A. Çerez Nedir?</a>
+          <a href="#b">B. Kullanılan Çerez Türleri</a>
+          <a href="#c">C. Çerezlerin Kullanım Amaçları</a>
+          <a href="#d">D. Çerez Tercihlerinin Yönetimi</a>
+        </nav>
+
+        <article class="legal">
+          <h2 id="a">A. Çerez Nedir?</h2>
+          <p>Çerezler, bir web sitesini ziyaret ettiğinizde tarayıcınıza kaydedilen küçük metin dosyalarıdır. Bu dosyalar, siteyi daha verimli kullanmanızı sağlamak ve deneyiminizi iyileştirmek için kullanılır.</p>
+
+          <h2 id="b">B. Kullanılan Çerez Türleri</h2>
+          <h3>1. Zorunlu Çerezler</h3>
+          <p>Sitenin temel işlevleri (sepet, oturum, tercih saklama) için gereklidir; devre dışı bırakılamaz.</p>
+          <h3>2. İşlevsel Çerezler</h3>
+          <p>Dil tercihi gibi seçimlerinizi hatırlayarak deneyimi kişiselleştirir.</p>
+          <h3>3. Analitik Çerezler</h3>
+          <p>Sitenin nasıl kullanıldığını anlamamıza ve geliştirmemize yardımcı olur.</p>
+          <h3>4. Pazarlama Çerezleri</h3>
+          <p>İlgi alanlarınıza uygun içerik sunmak için kullanılabilir; yalnızca onayınızla etkinleşir.</p>
+
+          <h2 id="c">C. Çerezlerin Kullanım Amaçları</h2>
+          <ul>
+            <li>Oturum ve sepet bilgilerinin korunması</li>
+            <li>Dil ve görüntüleme tercihlerinin hatırlanması</li>
+            <li>Site performansının ölçülmesi ve iyileştirilmesi</li>
+            <li>Onay verilmesi hâlinde kişiselleştirilmiş içerik sunulması</li>
+          </ul>
+
+          <h2 id="d">D. Çerez Tercihlerinin Yönetimi</h2>
+          <p>Sitemizi ilk ziyaretinizde gösterilen çerez bildirimi üzerinden çerezleri <b>kabul edebilir</b> veya <b>reddedebilirsiniz</b>. Tarayıcı ayarlarınızdan da çerezleri her zaman silebilir veya engelleyebilirsiniz. Zorunlu çerezlerin engellenmesi bazı işlevlerin çalışmamasına neden olabilir.</p>
+          <p>Kişisel verilerinizin işlenmesine ilişkin detaylar için <a href="kvkk.html">KVKK</a> ve <a href="aydinlatma.html">Aydınlatma Metni</a> sayfalarımızı inceleyebilirsiniz.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sipariş Takip — TG Germany</title>
+  <meta name="description" content="TG Germany sipariş takip: e-posta ve sipariş numaranızla siparişinizin güncel durumunu sorgulayın." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main x-data="tgTrack()">
+    <div class="page-header">
+      <div class="container-tg">
+        <nav class="breadcrumb" aria-label="Konum">
+          <a href="index.html">Ana Sayfa</a>
+          <span class="sep">/</span>
+          <span class="current">Sipariş Takip</span>
+        </nav>
+        <div class="page-header__inner">
+          <h1 class="page-header__title">Sipariş Takip</h1>
+          <p class="page-header__sub">E-posta adresiniz ve sipariş numaranızla siparişinizin güncel durumunu görüntüleyin.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container-tg" style="max-width:520px">
+
+        <!-- Logged-in shortcut -->
+        <div class="account-card mb-6 flex items-center gap-3 justify-between" x-show="$store.auth.loggedIn" x-cloak>
+          <p class="text-sm">Giriş yaptınız. Tüm siparişlerinizi hesabınızdan görebilirsiniz.</p>
+          <a href="hesabim.html#siparisler" class="btn btn--secondary btn--sm shrink-0">Siparişlerim</a>
+        </div>
+
+        <form class="account-card" @submit.prevent="query()">
+          <div class="field">
+            <label class="field__label" for="tk-email">E-posta Adresi <span class="req">*</span></label>
+            <input id="tk-email" type="email" class="field__input" :class="errors.email && 'field--error'"
+                   x-model="email" placeholder="ornek@eposta.com" @input="errors.email=''" />
+            <span class="field__error" x-show="errors.email" x-text="errors.email" x-cloak></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="tk-id">Sipariş Numarası <span class="req">*</span></label>
+            <input id="tk-id" type="text" class="field__input" :class="errors.id && 'field--error'"
+                   x-model="orderId" placeholder="Örn. TG-DEMO-001" @input="errors.id=''" />
+            <span class="field__error" x-show="errors.id" x-text="errors.id" x-cloak></span>
+            <span class="field__hint">Sipariş numaranızı onay e-postasında bulabilirsiniz.</span>
+          </div>
+          <button type="submit" class="btn btn--block">Sorgula</button>
+        </form>
+
+        <!-- Found -->
+        <template x-if="state==='found' && order">
+          <div class="account-card mt-6">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <span class="label">Sipariş No</span>
+                <p class="font-semibold text-ink" x-text="order.id"></p>
+              </div>
+              <span class="status-badge" :class="badgeClass" x-text="order.status"></span>
+            </div>
+
+            <!-- status steps -->
+            <div class="order-status">
+              <template x-for="(s, i) in steps" :key="i">
+                <div class="order-status__step" :class="stepClass(i)">
+                  <span class="order-status__dot" x-text="i+1"></span>
+                  <span x-text="s"></span>
+                </div>
+              </template>
+            </div>
+
+            <div class="order-summary__row" style="border-top:1px solid var(--tg-line);padding-top:12px;margin-top:6px">
+              <span>Toplam</span>
+              <span class="price" x-text="$store.cart.fmt(order.totals.genel)"></span>
+            </div>
+            <a :href="'siparis-detay.html?id='+order.id" class="btn btn--block mt-4">Sipariş Detayını Gör</a>
+          </div>
+        </template>
+
+        <!-- Not found -->
+        <div class="account-card mt-6" x-show="state==='notfound'" x-cloak>
+          <div class="empty-state" style="padding:24px 8px">
+            <div class="empty-state__icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+            <p class="empty-state__title">Sipariş bulunamadı</p>
+            <p>Girdiğiniz e-posta ve sipariş numarasıyla eşleşen bir sipariş bulamadık. Bilgileri kontrol edip tekrar deneyin.</p>
+            <div class="flex flex-wrap gap-3 justify-center mt-4">
+              <a href="iletisim.html" class="btn">İletişime Geç</a>
+              <a href="sss.html" class="btn btn--secondary">SSS</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment & delivery teaser -->
+        <div class="account-card mt-8">
+          <h2 class="font-semibold text-ink" style="font-size:15px">Ödeme &amp; Teslimat</h2>
+          <p class="text-sm mt-1">Onaylanan siparişler genellikle 24 saat içinde hazırlanır. 750 ₺ ve üzeri siparişlerde kargo ücretsizdir. Fiyatlara KDV dahildir.</p>
+          <a href="odeme-teslimat.html" class="inline-flex items-center gap-2 text-primary-700 font-semibold text-sm mt-3">
+            Detaylı bilgi
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    function tgTrack() {
+      return {
+        email: "",
+        orderId: "",
+        errors: { email: "", id: "" },
+        state: "idle",   // idle | found | notfound
+        order: null,
+        steps: ["Hazırlanıyor", "Kargoda", "Teslim Edildi"],
+        init() {
+          // prefill from ?id= (e.g. coming from order confirmation)
+          var id = window.TG.parseQuery("id");
+          if (id) this.orderId = id;
+          if (this.$store.auth.loggedIn && this.$store.auth.user) this.email = this.$store.auth.user.email || "";
+        },
+        validate() {
+          this.errors = { email: "", id: "" };
+          var ok = true;
+          if (!/^\S+@\S+\.\S+$/.test(this.email.trim())) { this.errors.email = "Geçerli bir e-posta adresi girin."; ok = false; }
+          if (!this.orderId.trim()) { this.errors.id = "Sipariş numarası gerekli."; ok = false; }
+          return ok;
+        },
+        query() {
+          if (!this.validate()) return;
+          var o = this.$store.orders.find(this.email.trim(), this.orderId.trim());
+          if (o) { this.order = o; this.state = "found"; }
+          else { this.order = null; this.state = "notfound"; }
+        },
+        get statusIndex() {
+          if (!this.order) return 0;
+          var i = this.steps.indexOf(this.order.status);
+          return i === -1 ? 0 : i;
+        },
+        get badgeClass() {
+          var s = this.order && this.order.status;
+          if (s === "Teslim Edildi") return "status-badge--done";
+          if (s === "Kargoda") return "status-badge--ship";
+          return "status-badge--prep";
+        },
+        stepClass(i) {
+          if (i < this.statusIndex) return "is-done";
+          if (i === this.statusIndex) return "is-current";
+          return "";
+        },
+      };
+    }
+    window.tgTrack = tgTrack;
+  </script>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-posta Doğrulama — TG Germany</title>
+  <meta name="description" content="TG Germany hesabınızın e-posta adresini doğrulayın." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main class="bg-soft">
+    <section class="section">
+      <div class="container-tg" style="max-width:520px">
+        <div class="account-card" x-data="tgVerify()">
+          <!-- pending state -->
+          <div x-show="!done">
+            <div class="benefit__icon" style="width:56px;height:56px">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            </div>
+            <h1 class="t-h2 mt-4">E-postanı doğrula</h1>
+            <p class="text-sm mt-2">
+              <b class="text-ink" x-text="email">hesabınıza</b> adresine bir doğrulama bağlantısı gönderdik.
+              Hesabını etkinleştirmek için aşağıdaki butonla doğrulamayı tamamla.
+            </p>
+            <button type="button" class="btn btn--block btn--lg mt-6" @click="verify()">Doğrula</button>
+            <p class="text-sm text-center mt-4">
+              E-posta gelmedi mi?
+              <button type="button" class="text-primary-700 font-semibold" @click="resend()">Tekrar gönder</button>
+            </p>
+            <p class="text-xs text-muted text-center mt-3">Bu bir örnek doğrulama adımıdır; gerçek e-posta gönderilmez.</p>
+          </div>
+
+          <!-- success state -->
+          <div x-show="done" x-cloak class="text-center">
+            <div class="benefit__icon mx-auto" style="width:56px;height:56px;background:rgba(31,157,87,.12);color:var(--tg-success)">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <h1 class="t-h2 mt-4">E-postan doğrulandı</h1>
+            <p class="text-sm mt-2">Hesabın etkin. Artık siparişlerini ve favorilerini yönetebilirsin.</p>
+            <a href="hesabim.html" class="btn btn--block btn--lg mt-6">Hesabıma Git</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function tgVerify() {
+      return {
+        done: false,
+        get email() {
+          return (this.$store.auth.user && this.$store.auth.user.email) || 'e-posta adresinize';
+        },
+        verify() {
+          this.$store.auth.verifyEmail();
+          this.done = true;
+          this.$store.toast.push('E-posta doğrulandı');
+        },
+        resend() { this.$store.toast.push('Doğrulama bağlantısı yeniden gönderildi'); },
+      };
+    }
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

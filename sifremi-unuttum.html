@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Şifremi Unuttum — TG Germany</title>
+  <meta name="description" content="TG Germany hesabınızın şifresini sıfırlamak için e-posta adresinizi girin." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-700-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-600-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main class="bg-soft">
+    <section class="section">
+      <div class="container-tg" style="max-width:520px">
+        <div class="account-card" x-data="tgForgot()">
+          <!-- request state -->
+          <div x-show="!sent">
+            <span class="label label--accent">Hesabım</span>
+            <h1 class="t-h2 mt-1">Şifremi unuttum</h1>
+            <p class="text-sm mt-2">Kayıtlı e-posta adresinizi girin; şifre sıfırlama bağlantısını gönderelim.</p>
+
+            <form @submit.prevent="submit()" novalidate class="mt-6">
+              <div class="field" :class="err && 'field--error'">
+                <label class="field__label" for="fp-email">E-posta</label>
+                <input id="fp-email" type="email" class="field__input" x-model="email" autocomplete="email" placeholder="ornek@eposta.com" />
+                <span class="field__error" x-show="err" x-text="err" x-cloak></span>
+              </div>
+              <button type="submit" class="btn btn--block btn--lg">Sıfırlama Bağlantısı Gönder</button>
+            </form>
+            <p class="text-sm text-center mt-5">
+              <a href="giris.html" class="text-primary-700 font-semibold">← Giriş sayfasına dön</a>
+            </p>
+          </div>
+
+          <!-- sent state -->
+          <div x-show="sent" x-cloak class="text-center">
+            <div class="benefit__icon mx-auto" style="width:56px;height:56px;background:rgba(31,157,87,.12);color:var(--tg-success)">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            </div>
+            <h1 class="t-h2 mt-4">Sıfırlama bağlantısı gönderildi</h1>
+            <p class="text-sm mt-2">
+              <b class="text-ink" x-text="email"></b> adresine şifre sıfırlama bağlantısını gönderdik.
+              Gelen kutunu kontrol et.
+            </p>
+            <a href="sifre-sifirla.html?t=mock" class="btn btn--block btn--lg mt-6">Sıfırlamaya Devam Et</a>
+            <p class="text-xs text-muted text-center mt-3">Bu bir örnek adımdır; gerçek e-posta gönderilmez.</p>
+            <p class="text-sm text-center mt-4">
+              <a href="giris.html" class="text-primary-700 font-semibold">← Giriş sayfasına dön</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <div x-data>
+    <template x-teleport="body">
+      <div class="toast-host" aria-live="polite">
+        <template x-for="t in $store.toast.items" :key="t.id">
+          <div class="toast" :class="'toast--'+t.type" x-text="t.msg" x-cloak></div>
+        </template>
+      </div>
+    </template>
+  </div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    function tgForgot() {
+      return {
+        email: '', sent: false, err: '',
+        submit() {
+          this.err = '';
+          if (!this.email.trim()) { this.err = 'E-posta adresinizi girin.'; return; }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email.trim())) { this.err = 'Geçerli bir e-posta girin.'; return; }
+          // mock: her zaman başarı (gerçek e-posta yok)
+          this.sent = true;
+        },
+      };
+    }
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>
