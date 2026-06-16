@@ -14,6 +14,60 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
   <link rel="stylesheet" href="assets/css/styles.css" />
+  <style>
+    /* ---- Fatura (Demo) modalı — sayfaya özel, foundation CSS'e dokunulmaz ---- */
+    .invoice-modal { position: fixed; inset: 0; z-index: 210; display: flex; align-items: flex-start;
+      justify-content: center; padding: 24px 16px; overflow-y: auto; }
+    .invoice-modal__backdrop { position: fixed; inset: 0; background: rgba(28, 36, 34, .5); }
+    .invoice-modal__dialog { position: relative; z-index: 1; width: min(720px, 100%); background: #fff;
+      border-radius: var(--r-lg, 14px); box-shadow: var(--shadow-drawer, 0 24px 60px rgba(28,36,34,.22));
+      margin: auto; overflow: hidden; }
+    .invoice-modal__bar { display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--tg-line); }
+    .invoice-sheet { padding: 24px; }
+    @media (min-width: 768px) { .invoice-sheet { padding: 32px; } }
+    .invoice-sheet__head { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;
+      padding-bottom: 18px; border-bottom: 1px solid var(--tg-line); }
+    .invoice-sheet__logo { height: 30px; width: auto; margin-bottom: 10px; }
+    .invoice-sheet__doc { font-size: 18px; font-weight: 700; color: var(--tg-ink); }
+    .invoice-sheet__note { font-size: 12px; color: var(--tg-muted); margin-top: 4px; max-width: 30ch; }
+    .invoice-sheet__meta { text-align: right; font-size: 13px; display: grid; gap: 4px; align-content: start; }
+    .invoice-sheet__meta p { display: flex; gap: 10px; justify-content: flex-end; }
+    .invoice-sheet__meta span { color: var(--tg-muted); }
+    .invoice-sheet__meta b { color: var(--tg-ink); font-weight: 600; }
+    .invoice-sheet__parties { display: grid; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--tg-line); }
+    @media (min-width: 600px) { .invoice-sheet__parties { grid-template-columns: 1fr 1fr; } }
+    .invoice-sheet__label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--tg-muted); margin-bottom: 8px; }
+    .invoice-sheet__addr { font-size: 13px; color: var(--tg-body); line-height: 1.55; }
+    .invoice-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 13px; }
+    .invoice-table th { text-align: left; font-weight: 600; color: var(--tg-muted); font-size: 11px;
+      letter-spacing: .04em; text-transform: uppercase; padding: 0 8px 10px; border-bottom: 1px solid var(--tg-line); }
+    .invoice-table td { padding: 10px 8px; border-bottom: 1px solid var(--tg-line); color: var(--tg-ink); vertical-align: top; }
+    .invoice-table .num { text-align: right; white-space: nowrap; }
+    .invoice-totals { margin-left: auto; max-width: 320px; }
+    .invoice-totals__row { display: flex; justify-content: space-between; gap: 16px; font-size: 13px;
+      color: var(--tg-body); padding: 6px 0; }
+    .invoice-totals__kdv { color: var(--tg-muted); }
+    .invoice-totals__grand { border-top: 1px solid var(--tg-line); margin-top: 6px; padding-top: 12px;
+      font-size: 16px; font-weight: 700; color: var(--tg-ink); }
+    .invoice-sheet__foot { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--tg-line);
+      font-size: 11px; color: var(--tg-muted); text-align: center; }
+
+    /* ---- Yazdırma: yalnızca fatura görünür ---- */
+    @media print {
+      body { background: #fff !important; }
+      body * { visibility: hidden !important; }
+      .invoice-modal, .invoice-modal * { visibility: visible !important; }
+      .invoice-modal { position: absolute !important; inset: 0; padding: 0; overflow: visible; display: block; }
+      .invoice-modal__backdrop { display: none !important; }
+      .invoice-modal__dialog { width: 100% !important; max-width: 100% !important; box-shadow: none !important;
+        border-radius: 0 !important; margin: 0 !important; }
+      .invoice-noprint { display: none !important; }
+      .invoice-sheet { padding: 16px !important; }
+    }
+    @page { margin: 14mm; }
+  </style>
 </head>
 <body>
 
@@ -164,7 +218,7 @@
                     <span class="price" x-text="$store.cart.fmt(order.totals.genel)"></span>
                   </div>
                   <p class="kdv-note">Fiyatlara KDV dahildir.</p>
-                  <button type="button" class="btn btn--secondary btn--block mt-4" @click="$store.toast.push('Fatura hazırlanıyor (örnek)')">Faturayı Görüntüle</button>
+                  <button type="button" class="btn btn--secondary btn--block mt-4" @click="openInvoice()">Faturayı Görüntüle</button>
                   <a href="hesabim.html#siparisler" class="btn btn--ghost btn--block mt-2">Siparişlerime Dön</a>
                 </div>
               </div>
@@ -205,6 +259,124 @@
       </div>
     </template>
 
+    <!-- ===== Fatura (Demo) modalı ===== -->
+    <template x-if="order">
+      <template x-teleport="body">
+        <div class="invoice-modal" x-show="invoiceOpen" x-cloak
+             @keydown.escape.window="closeInvoice()">
+          <div class="invoice-modal__backdrop" @click="closeInvoice()" x-transition.opacity></div>
+          <div class="invoice-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="invoiceTitle"
+               x-transition:enter="transition ease-out duration-200"
+               x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+
+            <!-- toolbar (ekranda; baskıda gizli) -->
+            <div class="invoice-modal__bar invoice-noprint">
+              <span class="font-semibold text-ink">Fatura (Demo)</span>
+              <div class="flex items-center gap-2">
+                <button type="button" class="btn btn--sm" @click="printInvoice()">Yazdır / PDF</button>
+                <button type="button" class="icon-btn tap" @click="closeInvoice()" aria-label="Kapat">✕</button>
+              </div>
+            </div>
+
+            <!-- yazdırılabilir alan -->
+            <div class="invoice-sheet" id="invoiceSheet">
+              <!-- header -->
+              <div class="invoice-sheet__head">
+                <div>
+                  <img src="assets/img/logo.png" alt="TG Germany" class="invoice-sheet__logo" />
+                  <p class="invoice-sheet__doc">Fatura (Demo)</p>
+                  <p class="invoice-sheet__note">Bu belge örnek amaçlıdır — demo fatura, resmi belge değildir.</p>
+                </div>
+                <div class="invoice-sheet__meta">
+                  <p><span>Sipariş No</span><b x-text="order.id"></b></p>
+                  <p><span>Tarih</span><b x-text="fmtDate(order.date)"></b></p>
+                  <p><span>Durum</span><b x-text="order.status"></b></p>
+                </div>
+              </div>
+
+              <!-- müşteri / teslimat -->
+              <div class="invoice-sheet__parties">
+                <div>
+                  <p class="invoice-sheet__label">Müşteri / Teslimat</p>
+                  <template x-if="order.address">
+                    <div class="invoice-sheet__addr">
+                      <p class="text-ink font-medium" x-text="(order.address.ad || '') + ' ' + (order.address.soyad || '')"></p>
+                      <p x-text="order.address.adres"></p>
+                      <p x-text="(order.address.ilce || '') + (order.address.il ? ' / ' + order.address.il : '')"></p>
+                      <p x-show="order.address.telefon" x-text="order.address.telefon"></p>
+                      <p x-text="order.email"></p>
+                    </div>
+                  </template>
+                  <template x-if="!order.address">
+                    <div class="invoice-sheet__addr"><p x-text="order.email"></p></div>
+                  </template>
+                </div>
+                <div>
+                  <p class="invoice-sheet__label">Satıcı / Firma Bilgileri</p>
+                  <div class="invoice-sheet__addr">
+                    <p class="data-tbd" title="Firma ünvanı eklenecek">Ünvan: —</p>
+                    <p class="data-tbd" title="Firma adresi eklenecek">Adres: —</p>
+                    <p class="data-tbd" title="Vergi dairesi / no eklenecek">Vergi D. / No: —</p>
+                    <p class="data-tbd" title="MERSİS no eklenecek">MERSİS: —</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- kalemler -->
+              <table class="invoice-table">
+                <thead>
+                  <tr>
+                    <th>Ürün</th>
+                    <th class="num">Adet</th>
+                    <th class="num">Birim Fiyat</th>
+                    <th class="num">Toplam</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template x-for="(it, idx) in order.items" :key="idx">
+                    <tr>
+                      <td x-text="it.name"></td>
+                      <td class="num" x-text="it.qty"></td>
+                      <td class="num" x-text="$store.cart.fmt(it.price)"></td>
+                      <td class="num" x-text="$store.cart.fmt(it.price * it.qty)"></td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+
+              <!-- totals -->
+              <div class="invoice-totals">
+                <div class="invoice-totals__row">
+                  <span>Ara Toplam</span>
+                  <span x-text="$store.cart.fmt(order.totals.ara)"></span>
+                </div>
+                <div class="invoice-totals__row" x-show="order.totals.indirim > 0">
+                  <span>İndirim</span>
+                  <span x-text="'-' + $store.cart.fmt(order.totals.indirim)"></span>
+                </div>
+                <div class="invoice-totals__row">
+                  <span>Kargo</span>
+                  <span x-text="order.totals.kargo > 0 ? $store.cart.fmt(order.totals.kargo) : 'Ücretsiz'"></span>
+                </div>
+                <div class="invoice-totals__row invoice-totals__kdv">
+                  <span>KDV (%20 dahil)</span>
+                  <span x-text="$store.cart.fmt(kdvDahil())"></span>
+                </div>
+                <div class="invoice-totals__row invoice-totals__grand">
+                  <span>Genel Toplam</span>
+                  <span x-text="$store.cart.fmt(order.totals.genel)"></span>
+                </div>
+              </div>
+
+              <p class="invoice-sheet__foot">
+                Fiyatlara KDV dahildir · TG Germany — demo fatura, resmi belge değildir.
+              </p>
+            </div>
+          </div>
+        </div>
+      </template>
+    </template>
+
   </main>
 
   <div data-include="partials/footer.html"></div>
@@ -228,6 +400,7 @@
         steps: ['Hazırlanıyor', 'Kargoda', 'Teslim Edildi'],
         returnOpen: false, returnReason: '', returnErr: '', returnDone: false,
         returns: [],
+        invoiceOpen: false,
         init() {
           var id = window.TG.parseQuery('id');
           this.order = id ? this.$store.orders.get(id) : null;
@@ -253,6 +426,11 @@
           try { return new Date(iso).toLocaleDateString('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' }); }
           catch (e) { return ''; }
         },
+        /* KDV-DAHİL %20: dahil olan KDV tutarı = genel × 20/120 = genel / 6 */
+        kdvDahil() { return Math.round((this.order.totals.genel / 6) * 100) / 100; },
+        openInvoice() { this.invoiceOpen = true; document.body.style.overflow = 'hidden'; },
+        closeInvoice() { this.invoiceOpen = false; document.body.style.overflow = ''; },
+        printInvoice() { window.print(); },
         submitReturn() {
           this.returnErr = '';
           if (!this.returnReason) { this.returnErr = 'Lütfen bir iade sebebi seçin.'; return; }

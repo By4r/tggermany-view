@@ -17,6 +17,24 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/poppins-400-latin-ext.woff2" crossorigin />
   <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <!-- Page-scoped: sticky intro column on desktop so it tracks the long form.
+       Offset clears the sticky site header (condensed main bar ~70px + gap).
+       Disabled on mobile/tablet where the layout stacks to a single column. -->
+  <style>
+    @media (min-width: 1024px) {
+      .b2b-intro { position: sticky; top: 88px; align-self: start; }
+    }
+    .why-card { padding: 22px 22px 8px; }
+    .why-card__title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--tg-ink); margin-bottom: 4px; }
+    .why-card__title svg { color: var(--tg-primary-700); flex: none; }
+    .why-list { list-style: none; margin: 0; padding: 0; }
+    .why-list li { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--tg-line); }
+    .why-list li:first-child { border-top: 0; }
+    .why-list .why-num { flex: none; width: 26px; height: 26px; border-radius: 999px; background: rgba(0,168,169,.10); color: var(--tg-primary-700); font-size: 12px; font-weight: 700; display: grid; place-items: center; margin-top: 1px; }
+    .why-list strong { display: block; font-size: 14px; font-weight: 600; color: var(--tg-ink); }
+    .why-list span { font-size: 13px; color: var(--tg-body); }
+  </style>
 </head>
 <body>
 
@@ -100,8 +118,8 @@
     <section class="section" id="talep">
       <div class="container-tg" x-data="Object.assign(tgFormUX(), kurumsalForm())">
         <div class="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
-          <!-- Intro column -->
-          <div>
+          <!-- Intro column (sticky on desktop) -->
+          <div class="b2b-intro">
             <span class="label label--accent">Ürün Talep Formu</span>
             <h2 class="t-h2 mt-2">Teklif alın</h2>
             <p class="mt-3">İhtiyacınızı paylaşın, kurumsal satış ekibimiz en uygun ürün ve adet seçenekleriyle size özel bir teklifle dönüş yapsın.</p>
@@ -110,6 +128,32 @@
               <li class="flex items-start gap-3"><span class="benefit__icon" style="width:34px;height:34px;border-radius:8px;margin:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span>Toplu adetlerde avantajlı fiyatlandırma</span></li>
               <li class="flex items-start gap-3"><span class="benefit__icon" style="width:34px;height:34px;border-radius:8px;margin:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span>Tek noktadan teslimat ve takip</span></li>
             </ul>
+
+            <!-- Balancing block: compact value mini-list, fills the bottom gap next to the long form -->
+            <div class="card why-card mt-7">
+              <p class="why-card__title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+                Neden TG Germany Kurumsal?
+              </p>
+              <ul class="why-list">
+                <li>
+                  <span class="why-num">1</span>
+                  <span><strong>Uçtan uca tek muhatap</strong>Tasarımdan teslimata kadar tüm sürecte tek bir kurumsal satış temsilcisiyle ilerlersiniz.</span>
+                </li>
+                <li>
+                  <span class="why-num">2</span>
+                  <span><strong>Markanıza sadık baskı kalitesi</strong>Logonuzu ürün yüzeyine en doğru renk ve oranlarda uygularız.</span>
+                </li>
+                <li>
+                  <span class="why-num">3</span>
+                  <span><strong>Gerçekten kullanılan ürünler</strong>Çekmecede kalmayan, gündelik hayatta yer bulan pratik teknoloji hediyeleri.</span>
+                </li>
+                <li>
+                  <span class="why-num">4</span>
+                  <span><strong>Hızlı geri dönüş</strong>Talebinizi aldıktan sonra en kısa sürede ürün ve adet seçenekleriyle dönüş yaparız.</span>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <!-- Form column -->

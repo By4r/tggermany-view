@@ -563,7 +563,11 @@ button { font-family: inherit; cursor: pointer; }
 .order-status__step { flex: 1; text-align: center; position: relative; font-size: 12px; color: var(--tg-muted); }
 .order-status__dot { width: 26px; height: 26px; border-radius: 999px; margin: 0 auto 8px; display: grid; place-items: center; background: var(--tg-bg-soft); border: 2px solid var(--tg-line); color: var(--tg-muted); font-size: 13px; position: relative; z-index: 1; }
 .order-status__step::before { content: ""; position: absolute; top: 13px; left: -50%; width: 100%; height: 2px; background: var(--tg-line); z-index: 0; }
-.order-status__step:first-child::before { display: none; }
+/* Hide the connector before the FIRST step so the track clamps to the first dot's centre.
+   Steps are rendered via Alpine <template x-for>, so the <template> is the literal :first-child;
+   target by type instead — the step <div>s are the only div siblings — covering both
+   Alpine-rendered and static markup. */
+.order-status__step:first-of-type::before { display: none; }
 .order-status__step.is-done .order-status__dot, .order-status__step.is-current .order-status__dot { background: var(--tg-primary); border-color: var(--tg-primary); color: #fff; }
 .order-status__step.is-done::before, .order-status__step.is-current::before { background: var(--tg-primary); }
 .order-status__step.is-current { color: var(--tg-primary-700); font-weight: 600; }

@@ -76,7 +76,10 @@
 
         <!-- Active filter chips -->
         <div class="flex flex-wrap items-center gap-2 pb-4" x-show="hasFilters" x-cloak>
-          <template x-if="f.sub">
+          <template x-if="cat">
+            <span class="chip"><span x-text="cat.name"></span><button type="button" @click="selectPillar(null)" aria-label="Kaldır">✕</button></span>
+          </template>
+          <template x-if="cat && f.sub">
             <span class="chip"><span x-text="window.TG.subName(cat.slug, f.sub)"></span><button type="button" @click="f.sub=null" aria-label="Kaldır">✕</button></span>
           </template>
           <template x-for="c in f.colors" :key="c">
@@ -95,12 +98,26 @@
 
           <!-- Filter sidebar (desktop) -->
           <aside class="hidden lg:block" aria-label="Filtreler">
+            <!-- pillar (kategori) — always visible, first-class facet -->
+            <div class="filter__group" style="padding-top:0">
+              <p class="filter__title">Kategori</p>
+              <label class="filter__opt">
+                <input type="radio" name="pillar" :checked="!cat" @change="selectPillar(null)" />
+                <span>Tümü</span>
+              </label>
+              <template x-for="c in window.TG.categories" :key="c.slug">
+                <label class="filter__opt">
+                  <input type="radio" name="pillar" :checked="cat && cat.slug===c.slug" @change="selectPillar(c.slug)" />
+                  <span x-text="c.name"></span>
+                </label>
+              </template>
+            </div>
             <!-- subcategory -->
             <div class="filter__group" x-show="cat && cat.sub.length">
               <p class="filter__title">Alt Kategori</p>
               <template x-for="s in (cat ? cat.sub : [])" :key="s.slug">
                 <label class="filter__opt">
-                  <input type="radio" name="sub" :value="s.slug" :checked="f.sub===s.slug" @change="f.sub = (f.sub===s.slug ? null : s.slug)" @click="f.sub = (f.sub===s.slug ? null : s.slug)" />
+                  <input type="radio" name="sub" :value="s.slug" :checked="f.sub===s.slug" @click="f.sub = (f.sub===s.slug ? null : s.slug)" />
                   <span x-text="s.name"></span>
                 </label>
               </template>
@@ -267,7 +284,20 @@
             <button class="icon-btn tap" @click="mobileFilters=false" aria-label="Kapat">✕</button>
           </div>
           <div class="drawer__body">
-            <div class="filter__group" x-show="cat && cat.sub.length" style="padding-top:0">
+            <div class="filter__group" style="padding-top:0">
+              <p class="filter__title">Kategori</p>
+              <label class="filter__opt">
+                <input type="radio" name="mpillar" :checked="!cat" @change="selectPillar(null)" />
+                <span>Tümü</span>
+              </label>
+              <template x-for="c in window.TG.categories" :key="'mp-'+c.slug">
+                <label class="filter__opt">
+                  <input type="radio" name="mpillar" :checked="cat && cat.slug===c.slug" @change="selectPillar(c.slug)" />
+                  <span x-text="c.name"></span>
+                </label>
+              </template>
+            </div>
+            <div class="filter__group" x-show="cat && cat.sub.length">
               <p class="filter__title">Alt Kategori</p>
               <template x-for="s in (cat ? cat.sub : [])" :key="'m-'+s.slug">
                 <label class="filter__opt">
@@ -378,7 +408,7 @@
           return this.sorted.slice(start, start + this.perPage);
         },
         get hasFilters() {
-          return !!this.f.sub || this.f.colors.length > 0 || this.f.inStock || this.priceTouched;
+          return !!this.cat || !!this.f.sub || this.f.colors.length > 0 || this.f.inStock || this.priceTouched;
         },
         get priceTouched() {
           return (typeof this.f.min === "number" && !isNaN(this.f.min)) || (typeof this.f.max === "number" && !isNaN(this.f.max));
@@ -391,6 +421,19 @@
         toggleColor(c) {
           var i = this.f.colors.indexOf(c);
           if (i === -1) this.f.colors.push(c); else this.f.colors.splice(i, 1);
+        },
+        selectPillar(slug) {
+          // URL/hash = source of truth; hashchange listener updates cat + clears filters.
+          if (slug) {
+            if (window.TG.parseHash() === slug) { this.clearFilters(); return; }
+            location.hash = slug;
+          } else {
+            if (!window.TG.parseHash()) { this.clearFilters(); return; }
+            // clear hash without leaving a "#" in the URL
+            history.pushState("", document.title, location.pathname + location.search);
+            this.cat = null;
+            this.clearFilters();
+          }
         },
         resetPrice() { this.f.min = null; this.f.max = null; },
         clearFilters() {
