@@ -336,6 +336,17 @@ button { font-family: inherit; cursor: pointer; }
 .promo-feature__overlay { position: absolute; inset: 0; background: linear-gradient(95deg, rgba(3,48,51,.88) 0%, rgba(3,48,51,.6) 42%, rgba(3,48,51,.15) 100%); }
 @media (min-width: 768px) { .promo-feature { min-height: 360px; } }
 
+/* Editorial promo tiles (3-up, image-filled — distinct from 2-up cards & wide band) */
+.promo-tile { position: relative; overflow: hidden; border-radius: var(--r-lg); min-height: 240px; display: flex; align-items: flex-end; box-shadow: var(--shadow-card); transition: transform .25s ease, box-shadow .25s ease; }
+.promo-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.promo-tile__bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform .5s ease; }
+.promo-tile:hover .promo-tile__bg { transform: scale(1.05); }
+.promo-tile__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,48,51,.08) 0%, rgba(3,48,51,.4) 50%, rgba(3,48,51,.85) 100%); }
+.promo-tile__content { position: relative; z-index: 2; padding: 20px; color: #fff; }
+.promo-tile__content h3 { color: #fff; font-size: 20px; font-weight: 700; margin: 4px 0 10px; text-shadow: 0 1px 4px rgba(0,0,0,.3); }
+.promo-tile__link { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; color: #fff; }
+.promo-tile:hover .promo-tile__link { gap: 9px; }
+
 /* Real-data placeholder marker (no fake contact data shipped) */
 .data-tbd { color: var(--tg-muted); font-style: italic; }
 
