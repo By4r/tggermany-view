@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TG Germany — Mobil Aksesuar ve Akıllı Teknoloji</title>
+  <meta name="description" content="TG Germany ile mobil aksesuar ve teknoloji ürünlerinde kalite, tasarım ve güvenilir performansı keşfedin. Şarj, ses, fonksiyon ve koruma çözümleri." />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/img/favicon.png" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <div data-include="partials/header.html"></div>
+
+  <main>
+    <!-- ============================ HERO ============================ -->
+    <section class="bg-soft">
+      <div class="container-tg py-8 lg:py-10">
+        <div class="card grid lg:grid-cols-2 items-center overflow-hidden" style="border:1px solid var(--tg-line)">
+          <div class="p-8 lg:p-12">
+            <span class="label label--accent">Akıllı Aksesuar Çözümleri</span>
+            <h1 class="t-h1 mt-3 max-w-md">Teknolojiyle gününü güçlendir</h1>
+            <p class="mt-3 max-w-md">Mobil aksesuar ve akıllı teknoloji ürünlerinde güvenilir çözümler. Şarj, ses ve bağlantı ürünlerinde doğru tercih.</p>
+            <div class="flex flex-wrap gap-3 mt-7">
+              <a href="kategori.html" class="btn btn--lg">Ürünleri Keşfet</a>
+              <a href="kurumsal-satis.html" class="btn btn--light btn--lg">Kurumsal Satış</a>
+            </div>
+          </div>
+          <div class="ratio-box ratio-16-9 lg:ratio-4-3" style="background-image:url('assets/img/banners/hero.webp')"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CATEGORY CIRCLE RAIL ===================== -->
+    <section class="section">
+      <div class="container-tg">
+        <h2 class="t-h2 mb-6">Kategoriler</h2>
+        <div class="scroll-row no-scrollbar md:grid md:grid-cols-4 lg:flex lg:justify-between lg:gap-6" x-data>
+          <template x-for="c in window.TG.categories" :key="c.slug">
+            <a :href="'kategori.html#'+c.slug" class="flex md:flex-col items-center gap-3 md:text-center shrink-0 group" style="min-width:120px">
+              <span class="cat-circle ratio-box" :style="'background-image:url('+c.photo+')'"></span>
+              <span class="font-medium text-ink text-sm" x-text="c.name"></span>
+            </a>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= TREND ÜRÜNLER ========================= -->
+    <section class="section bg-soft">
+      <div class="container-tg">
+        <div class="flex items-end justify-between mb-6">
+          <h2 class="t-h2">Çok Satanlar</h2>
+          <a href="kategori.html" class="btn btn--ghost btn--sm hidden sm:inline-flex">Tümünü gör →</a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5" x-data>
+          <template x-for="p in window.TG.byTrend(5)" :key="p.id">
+            <article class="card product-card" x-data="tgProductCard(p)">
+              <a :href="'urun.html#'+p.id" class="media block">
+                <span class="badge" :class="p.badge==='Yeni' && 'badge--new'" x-show="p.badge" x-text="p.badge"></span>
+                <button type="button" class="fav" aria-label="Favorilere ekle" @click.prevent>♡</button>
+                <div class="ratio-box ratio-1-1" :style="'background-image:url('+p.photo+')'"></div>
+              </a>
+              <div class="body">
+                <span class="label" x-text="window.TG.catName(p.cat)"></span>
+                <a :href="'urun.html#'+p.id"><h3 class="title" x-text="p.name"></h3></a>
+                <div class="rating-row"><span class="stars" x-text="stars(p.rating)"></span><span x-text="'('+p.reviews+')'"></span></div>
+                <div class="price-row">
+                  <span class="flex flex-col leading-tight">
+                    <span class="price" :class="p.old && 'price--sale'" x-text="$store.cart.fmt(p.price)"></span>
+                    <span class="price--old text-xs" x-show="p.old" x-text="$store.cart.fmt(p.old)"></span>
+                  </span>
+                  <button class="add-circle tap" @click="addToCart()" :disabled="!p.stock" :aria-label="$store.lang.t('add')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== KATEGORİ VİTRİN ======================== -->
+    <section class="section">
+      <div class="container-tg">
+        <h2 class="t-h2 mb-6">Ürün Aileleri</h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" x-data>
+          <template x-for="c in window.TG.categories" :key="c.slug">
+            <a :href="'kategori.html#'+c.slug" class="card overflow-hidden group">
+              <div class="ratio-box ratio-4-3" :style="'background-image:url('+c.photo+')'"></div>
+              <div class="p-4 flex items-center justify-between">
+                <span class="font-semibold text-ink" x-text="c.name"></span>
+                <span class="text-primary-700 text-sm">Keşfet →</span>
+              </div>
+            </a>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PROMO BANNERS (flat) ==================== -->
+    <section class="section bg-soft">
+      <div class="container-tg grid gap-4 md:grid-cols-2">
+        <div class="card overflow-hidden grid grid-cols-2 items-center" style="background:var(--tg-primary)">
+          <div class="p-7 text-white">
+            <span class="label" style="color:#cdeceb">Kampanya</span>
+            <h3 class="text-xl font-semibold text-white mt-2">Şarj ürünlerinde fırsatlar</h3>
+            <p class="text-sm mt-1" style="color:#e7f5f4">Powerbank ve hızlı şarj adaptörleri.</p>
+            <a href="kategori.html#fonksiyon" class="btn btn--light btn--sm mt-4">Fırsatları gör</a>
+          </div>
+          <div class="ratio-box ratio-1-1" style="background-image:url('assets/img/products/p1.jpg')"></div>
+        </div>
+        <div class="card overflow-hidden grid grid-cols-2 items-center">
+          <div class="p-7">
+            <span class="label label--accent">Yeni Sezon</span>
+            <h3 class="text-xl font-semibold text-ink mt-2">Sesini keşfet</h3>
+            <p class="text-sm mt-1">ANC kulaklıklar ve taşınabilir hoparlörler.</p>
+            <a href="kategori.html#ses" class="btn btn--sm mt-4">Keşfet</a>
+          </div>
+          <div class="ratio-box ratio-1-1" style="background-image:url('assets/img/products/p6.jpg')"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ÖNE ÇIKAN ÜRÜNLER GRID =================== -->
+    <section class="section">
+      <div class="container-tg">
+        <div class="flex items-end justify-between mb-6">
+          <h2 class="t-h2">Öne Çıkan Ürünler</h2>
+          <a href="kategori.html" class="btn btn--ghost btn--sm hidden sm:inline-flex">Tümünü gör →</a>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5" x-data>
+          <template x-for="p in window.TG.products.slice(0,10)" :key="p.id">
+            <article class="card product-card" x-data="tgProductCard(p)">
+              <a :href="'urun.html#'+p.id" class="media block">
+                <span class="badge" :class="p.badge==='Yeni' && 'badge--new'" x-show="p.badge" x-text="p.badge"></span>
+                <button type="button" class="fav" aria-label="Favorilere ekle" @click.prevent>♡</button>
+                <div class="ratio-box ratio-1-1" :style="'background-image:url('+p.photo+')'"></div>
+              </a>
+              <div class="body">
+                <span class="label" x-text="window.TG.catName(p.cat)"></span>
+                <a :href="'urun.html#'+p.id"><h3 class="title" x-text="p.name"></h3></a>
+                <div class="rating-row"><span class="stars" x-text="stars(p.rating)"></span><span x-text="'('+p.reviews+')'"></span></div>
+                <div class="price-row">
+                  <span class="flex flex-col leading-tight">
+                    <span class="price" :class="p.old && 'price--sale'" x-text="$store.cart.fmt(p.price)"></span>
+                    <span class="price--old text-xs" x-show="p.old" x-text="$store.cart.fmt(p.old)"></span>
+                  </span>
+                  <button class="add-circle tap" @click="addToCart()" :disabled="!p.stock" :aria-label="$store.lang.t('add')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRUST BAND (flat) ====================== -->
+    <section style="background:var(--tg-primary)">
+      <div class="container-tg py-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 text-white">
+        <div class="flex items-center gap-3">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/></svg>
+          <div><div class="font-semibold text-white text-sm">Hızlı Teslimat</div><div class="text-xs" style="color:#e7f5f4">750 ₺ üzeri ücretsiz kargo</div></div>
+        </div>
+        <div class="flex items-center gap-3">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg>
+          <div><div class="font-semibold text-white text-sm">Güvenli Ödeme</div><div class="text-xs" style="color:#e7f5f4">256-bit SSL koruma</div></div>
+        </div>
+        <div class="flex items-center gap-3">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9"/><path d="M3 4v5h5"/></svg>
+          <div><div class="font-semibold text-white text-sm">Kolay İade</div><div class="text-xs" style="color:#e7f5f4">14 gün içinde ücretsiz</div></div>
+        </div>
+        <div class="flex items-center gap-3">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div><div class="font-semibold text-white text-sm">2 Yıl Garanti</div><div class="text-xs" style="color:#e7f5f4">Tüm ürünlerde geçerli</div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="partials/footer.html"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="assets/js/include.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!-- TG Germany footer: link columns + legal strip (light, flat) -->
+<footer class="site-footer">
+  <!-- Newsletter strip -->
+  <div style="border-bottom:1px solid var(--tg-line)">
+    <div class="container-tg py-8 grid gap-5 md:grid-cols-2 md:items-center">
+      <div>
+        <h3 class="text-ink text-lg font-semibold">Yeniliklerden ilk siz haberdar olun</h3>
+        <p class="text-sm mt-1">Yeni ürünler ve kampanyalar için e-posta listemize katılın.</p>
+      </div>
+      <form class="flex gap-2" @submit.prevent x-data="{ email:'' }">
+        <input type="email" required x-model="email" placeholder="E-posta adresiniz"
+               class="flex-1 h-11 px-4 rounded-md border border-line text-ink bg-white" aria-label="E-posta adresiniz" />
+        <button type="submit" class="btn">Abone Ol</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Link columns -->
+  <div class="container-tg py-12 grid gap-10 grid-cols-2 lg:grid-cols-5">
+    <div class="col-span-2 lg:col-span-1">
+      <a href="index.html" class="inline-block mb-4" aria-label="TG Germany">
+        <img src="assets/img/logo.png" alt="TG Germany" style="height:42px;width:auto" />
+      </a>
+      <p class="text-sm leading-relaxed">Mobil aksesuar ve akıllı teknoloji ürünlerinde güvenilir çözümler.</p>
+      <div class="flex gap-2 mt-4">
+        <!-- Social: real-profile placeholders (no bare-domain / fake links) -->
+        <a href="#" class="social-ico" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#" class="social-ico" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2 0-3 1-3 3v2H9v3h2v6h3v-6h2.5l.5-3H14V9z"/></svg></a>
+        <a href="#" class="social-ico" aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12s0-3-.4-4.4a2.5 2.5 0 00-1.7-1.8C18.4 5.4 12 5.4 12 5.4s-6.4 0-7.9.4A2.5 2.5 0 002.4 7.6C2 9 2 12 2 12s0 3 .4 4.4a2.5 2.5 0 001.7 1.8c1.5.4 7.9.4 7.9.4s6.4 0 7.9-.4a2.5 2.5 0 001.7-1.8C22 15 22 12 22 12zm-12 3V9l5 3-5 3z"/></svg></a>
+        <a href="#" class="social-ico" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.94 7A2 2 0 116.94 3a2 2 0 010 4zM5 9h4v11H5zM13 9h3.8v1.6h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V20h-4v-4.9c0-1.2 0-2.7-1.7-2.7s-1.9 1.3-1.9 2.6V20h-4z"/></svg></a>
+      </div>
+    </div>
+
+    <div>
+      <h4>Kurumsal</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="hakkimizda.html">Hakkımızda</a></li>
+        <li><a href="satis-noktalari.html">Satış Noktaları</a></li>
+        <li><a href="kurumsal-satis.html">Kurumsal Satış</a></li>
+        <li><a href="iletisim.html">İletişim</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Destek</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#">Sipariş Takip</a></li>
+        <li><a href="#">Ödeme &amp; Teslimat</a></li>
+        <li><a href="#">İade &amp; Değişim</a></li>
+        <li><a href="#">Sıkça Sorulan Sorular</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Ürünler</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="kategori.html#akilli-yasam">Akıllı Yaşam</a></li>
+        <li><a href="kategori.html#ses">Ses</a></li>
+        <li><a href="kategori.html#fonksiyon">Fonksiyon</a></li>
+        <li><a href="kategori.html#koruma">Koruma</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>İletişim</h4>
+      <ul class="space-y-2 text-sm">
+        <!-- Real contact data to be supplied by client — shown as placeholders, never faked -->
+        <li class="data-tbd">Adres bilgisi eklenecek</li>
+        <li class="data-tbd">Telefon eklenecek</li>
+        <li class="data-tbd">E-posta eklenecek</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Legal strip -->
+  <div class="footer-legal">
+    <div class="container-tg py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2 justify-center">
+        <a href="kvkk.html">KVKK</a>
+        <a href="aydinlatma.html">Aydınlatma Metni</a>
+        <a href="mesafeli-satis.html">Uzak Mesafeli Satış Sözleşmesi</a>
+        <a href="cerezler.html">Çerezler</a>
+      </div>
+      <p>© 2026 TUGG — Tüm hakları saklıdır · <span class="text-ink">Gavia Works</span></p>
+    </div>
+  </div>
+</footer>

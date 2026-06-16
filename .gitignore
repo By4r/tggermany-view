@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+dist/
+build/
+*.log
+
+# screenshots are local reference / QA only — not deployed
+docs/screenshots/ttec/
+docs/screenshots/tggermany/
+docs/screenshots/build/
