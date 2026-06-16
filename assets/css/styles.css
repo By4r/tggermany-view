@@ -287,13 +287,12 @@ button { font-family: inherit; cursor: pointer; }
 .trust-band { position: relative; background-color: var(--tg-primary); overflow: hidden; }
 .trust-band::before {
   content: ""; position: absolute; inset: 0; z-index: 0;
-  background-image: url("../img/banners/hero.webp");
+  background-image: url("../img/banners/trust-bg.jpg");
   background-size: cover; background-position: center;
-  opacity: .14; mix-blend-mode: luminosity;
 }
 .trust-band::after {
   content: ""; position: absolute; inset: 0; z-index: 0;
-  background: linear-gradient(100deg, rgba(0,168,169,.5), rgba(1,117,119,.3));
+  background: linear-gradient(100deg, rgba(3,48,51,.92) 0%, rgba(0,104,106,.84) 55%, rgba(0,116,118,.84) 100%);
 }
 
 /* Real-data placeholder marker (no fake contact data shipped) */
