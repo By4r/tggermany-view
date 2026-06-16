@@ -9,8 +9,11 @@
 
 Delivered on the homepage:
 - **Full-bleed image hero** (moderate gaviaworks.com pattern): TG's own `hero.webp`, brand teal overlay (not cinematic), eyebrow + headline (amber accent) + 2 CTAs + bottom "Odak Alanlar" category strip (centered). ~86vh.
-- **2-row compact header**: utility bar (free-shipping · TR/DE switch · Kurumsal Satış · Hakkımızda · call-center placeholder) + single main bar (logo · centered category nav · compact search ~320px · account/cart). Category nav moved into the main bar; Kurumsal Satış/Hakkımızda live in the top utility bar (no duplicate).
+- **2-row compact header**: utility bar (free-shipping · TR/DE switch · Kurumsal Satış · Hakkımızda · call-center placeholder) + single main bar (**logo left · category nav centered · actions right**). Kurumsal Satış/Hakkımızda live in the top utility bar (no duplicate).
+- **Search = icon** in the actions group → reveals a collapsible full-width search panel (`tgHeader.toggleSearch`, focuses input). No persistent wide input.
 - **Mega-menu** (hover, full-width below the sticky header, with promo image).
+- **Extended-warranty section** ("Ürününüzü Güvenceye Alın"): warranty card (+2-yıl badge, Yeni Başvuru / Başvuru Kontrol → `ek-garanti.html`, legal note) + support block (call-center `data-tbd` placeholder, İletişim Formu → `iletisim.html`, socials).
+- **Image-led visual promo band** (audio collection, `promo-feature`) — distinct from the 2-up promo cards; copyright-safe asset, AA-tuned overlay.
 - **Modern product cards**: flush image (top corners clipped to card radius), hover lift + soft shadow + subtle image zoom, refined İndirim/Yeni badges, **"Sepete Ekle" reveals over the image on hover** (always visible on touch via `@media (hover:none)`), price hierarchy (current/old), 2-line title clamp, rating+count. Grid 2/3/5-up.
 - **Category circles** (centered, grouped), **promo banners** (flat), **trust band** (teal-dominant with a low-opacity TG image texture behind it).
 - **Cart drawer** (Alpine `$store.cart`, localStorage, free-shipping progress), **cookie consent** (persisted), **sticky header** (utility strip auto-hides on scroll-down; flicker fixed via `overflow-anchor:none` + post-toggle lock).
